@@ -24,8 +24,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./components/u
 import ShinyText from "./components/ShinyText";
 import { supabase } from "./supabaseClient";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API_URL = process.env.REACT_APP_API_URL;
+const API = `${API_URL}/api`;
 
 // Specialty tag colors
 const SPECIALTY_COLORS = {
