@@ -1,0 +1,154 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "FindUP",
+      "metaphor": "The Trusted Local Concierge",
+      "emotion": "Reassuring, Premium, Human, Efficient",
+      "theme_mode": "light",
+      "primary_audience": "French homeowners"
+    },
+    "typography": {
+      "font_family": {
+        "heading": "Fraunces, serif",
+        "body": "Manrope, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "h1": "text-4xl md:text-5xl font-serif font-semibold tracking-tight",
+        "h2": "text-3xl md:text-4xl font-serif font-medium tracking-tight",
+        "h3": "text-2xl md:text-3xl font-serif font-medium",
+        "body_lg": "text-lg font-sans leading-relaxed",
+        "body_base": "text-base font-sans leading-relaxed",
+        "caption": "text-sm font-sans text-muted-foreground"
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "DEFAULT": "#D4AF37",
+          "foreground": "#FFFFFF",
+          "hover": "#B5952F",
+          "description": "Metallic Gold / Mustard - Use for primary actions, 'Urgent' buttons, and accents."
+        },
+        "secondary": {
+          "DEFAULT": "#FAFAF9",
+          "foreground": "#1C1917",
+          "description": "Warm Stone White - Main background color."
+        },
+        "accent": {
+          "DEFAULT": "#F5F5F4",
+          "foreground": "#1C1917",
+          "description": "Stone 100 - Used for secondary buttons and card backgrounds."
+        },
+        "muted": {
+          "DEFAULT": "#E7E5E4",
+          "foreground": "#78716C",
+          "description": "Stone 200/500 - Borders and muted text."
+        },
+        "card": {
+          "DEFAULT": "#FFFFFF",
+          "foreground": "#1C1917"
+        },
+        "destructive": {
+          "DEFAULT": "#EF4444",
+          "foreground": "#FFFFFF"
+        }
+      },
+      "gradients": {
+        "gold_sheen": "linear-gradient(135deg, #D4AF37 0%, #F3D578 50%, #D4AF37 100%)",
+        "warm_fade": "linear-gradient(to bottom, #FAFAF9 0%, #FFFFFF 100%)"
+      }
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-12 lg:p-24",
+      "section_gap": "gap-12 md:gap-24",
+      "component_gap": "gap-4 md:gap-6"
+    },
+    "radius": {
+      "default": "rounded-xl",
+      "button": "rounded-full",
+      "card": "rounded-2xl"
+    },
+    "shadows": {
+      "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+      "hover": "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+      "float": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#D4AF37] text-white hover:bg-[#B5952F] rounded-full px-8 py-3 font-medium transition-all shadow-soft hover:shadow-hover",
+      "secondary": "bg-white border border-stone-200 text-stone-900 hover:bg-stone-50 rounded-full px-6 py-2 font-medium transition-all",
+      "urgent": "bg-[#D4AF37] text-white hover:bg-[#B5952F] rounded-full px-6 py-2 font-bold uppercase tracking-wide text-sm shadow-lg animate-pulse-slow",
+      "future": "bg-stone-100 text-stone-600 hover:bg-stone-200 rounded-full px-6 py-2 font-medium text-sm"
+    },
+    "cards": {
+      "artisan": "bg-white rounded-2xl border border-stone-100 shadow-soft hover:shadow-hover transition-all duration-300 p-6 flex flex-col gap-4 group",
+      "chat_bubble_user": "bg-[#D4AF37] text-white rounded-2xl rounded-tr-sm p-4 max-w-[80%] self-end shadow-sm",
+      "chat_bubble_ai": "bg-white border border-stone-100 text-stone-800 rounded-2xl rounded-tl-sm p-6 max-w-[80%] self-start shadow-soft"
+    },
+    "inputs": {
+      "search_hero": "w-full text-lg p-6 rounded-2xl border-0 shadow-float focus:ring-2 focus:ring-[#D4AF37]/20 placeholder:text-stone-400 bg-white/90 backdrop-blur-sm transition-all"
+    },
+    "badges": {
+      "verified": "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20"
+    }
+  },
+  "layout_strategies": {
+    "homepage": {
+      "structure": "Centered 'Concierge' Layout",
+      "elements": [
+        "Minimalist Header (Logo only)",
+        "Hero Section: Large typography + Central Input + Photo Upload",
+        "Background: Subtle warm gradient or blurred interior image"
+      ]
+    },
+    "results_page": {
+      "structure": "Split View (Desktop) / Stacked (Mobile)",
+      "desktop": "Grid: 60% List (Left) / 40% Map (Right, Sticky)",
+      "mobile": "List View with 'Show Map' floating button"
+    },
+    "artisan_detail": {
+      "structure": "Magazine Layout",
+      "elements": [
+        "Hero: Artisan Portrait + Rating + Badges",
+        "Content: Bio, Services, Reviews (Grid)",
+        "Sidebar: Contact/Book + Map"
+      ]
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": "https://images.unsplash.com/photo-1762810951632-68c9f197cf33?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "artisan_1": "https://images.unsplash.com/photo-1732395805034-e0bf859665e5?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "artisan_2": "https://images.unsplash.com/photo-1552622594-9a37efeec618?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "artisan_3": "https://images.unsplash.com/photo-1766524789958-b0ec578d7d41?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "problem_example": "https://images.unsplash.com/photo-1706206140285-fd36d93aaa83?crop=entropy&cs=srgb&fm=jpg&q=85"
+    },
+    "icons": {
+      "library": "lucide-react",
+      "preferred": ["Camera", "MapPin", "Star", "ShieldCheck", "Wrench", "Droplets", "Zap", "Hammer"]
+    }
+  },
+  "instructions_to_main_agent": {
+    "general": "You are building a 'Premium Local Concierge' service, not a tech startup. Avoid 'SaaS' tropes like gradients, dark mode, and complex dashboards. Focus on warmth, clarity, and trust.",
+    "map_integration": "Use 'react-leaflet'. Style the map tiles to be muted/grayscale so the Gold pins pop. Do not use default OpenStreetMap colors if possible (use a filter).",
+    "chat_flow": "The chat is the core. It should feel like texting a knowledgeable friend. Use 'typing' indicators. Limit the AI to 3 questions max.",
+    "animations": "Use 'framer-motion' for smooth entrance of chat bubbles and artisan cards. No bouncy springs. Use 'easeOut' curves.",
+    "accessibility": "Ensure the Gold color (#D4AF37) is only used on white backgrounds for large text or icons. For body text, use darker shades or black."
+  },
+  "universal_guidelines": {
+    "do_not": [
+      "Do not use 'Inter' font for headings. Use 'Fraunces'.",
+      "Do not use pure black (#000000). Use Stone 900 (#1C1917).",
+      "Do not make the map full-screen on mobile by default (it traps scroll).",
+      "Do not use 'tech blue' or 'success green' as primary colors."
+    ],
+    "must_do": [
+      "Mobile-first responsive design is critical.",
+      "All interactive elements must have 'data-testid'.",
+      "Use 'sonner' for toasts.",
+      "Use 'lucide-react' for icons."
+    ]
+  }
+}

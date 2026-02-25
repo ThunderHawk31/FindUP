@@ -1,0 +1,65 @@
+# ==================== ENVIRONMENT ====================
+# Never commit secrets
+.env
+.env.*
+*.env
+!.env.example
+
+# ==================== PYTHON ====================
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+*.egg-info/
+
+# ==================== NODE / REACT ====================
+node_modules/
+/build
+frontend/build
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# ==================== LOGS ====================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# ==================== SYSTEM ====================
+.DS_Store
+Thumbs.db
+*.pem
+
+# ==================== IDE ====================
+.idea/
+.vscode/
+*.swp
+
+# ==================== CACHES ====================
+.cache/
+frontend/node_modules/.cache/
+
+# ==================== TESTS ====================
+/coverage
+.pytest_cache/
+
+# ==================== BUILD / DIST ====================
+/build
+dist/
+/.next/
+/out/
+*.tsbuildinfo
+
+# ==================== MISC ====================
+*.zip
+*.tar.gz
+*.tar
+*.tgz
+*.pack
+dump.rdb
+.vercel
+chainlit.md
+.chainlit
