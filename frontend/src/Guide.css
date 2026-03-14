@@ -1,0 +1,567 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ══ LAYOUT ══ */
+.guide-page-layout { display: flex; flex-direction: column; min-height: 100svh; position: relative; z-index: 1; }
+
+.guide-main {
+  flex: 1;
+  width: 100%;
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 118px 28px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+
+/* ══ HERO ══ */
+.guide-hero { animation: fadeUp .55s ease .04s both; }
+
+.guide-hero-title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(1.8rem, 4.5vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.035em;
+  color: var(--navy);
+}
+
+/* ══════════════════════════════
+   CARTE GÉNÉRATION iOS
+   ══════════════════════════════ */
+.guide-generate-section { animation: fadeUp .55s ease .1s both; }
+
+.guide-generate-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 36px 28px 32px;
+  background: white;
+  border: 1px solid rgba(37,99,235,0.1);
+  border-radius: 28px;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.04),
+    0 12px 40px rgba(37,99,235,0.08),
+    inset 0 1px 0 rgba(255,255,255,1);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fond dégradé subtil */
+.guide-generate-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(37,99,235,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Icône avec rings */
+.guide-gen-icon-wrap {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.guide-gen-icon-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(37,99,235,0.12);
+  animation: ringPulse 2.4s ease-in-out infinite;
+}
+.guide-gen-icon-ring--2 {
+  inset: -10px;
+  border-color: rgba(37,99,235,0.07);
+  animation-delay: .6s;
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.06); opacity: 0.6; }
+}
+
+.guide-gen-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  background: linear-gradient(145deg, var(--navy) 0%, var(--navy-mid) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 6px 20px rgba(7,16,31,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+  position: relative;
+  z-index: 1;
+}
+
+/* Texte */
+.guide-gen-text { display: flex; flex-direction: column; gap: 6px; }
+
+.guide-gen-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -.02em;
+}
+
+.guide-gen-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .85rem;
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+/* Preview des étapes à générer */
+.guide-gen-steps-preview {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  width: 100%;
+  justify-content: center;
+}
+
+.guide-gen-step-dot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  position: relative;
+}
+
+/* Ligne connecteur entre dots */
+.guide-gen-step-dot:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: calc(50% + 7px);
+  right: calc(-50% + 7px);
+  height: 1.5px;
+  background: linear-gradient(to right, rgba(37,99,235,0.2), rgba(37,99,235,0.08));
+}
+
+.guide-gen-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--navy-mid));
+  box-shadow: 0 2px 6px rgba(37,99,235,0.25);
+  animation: dotGlow 1.8s ease-in-out infinite;
+  animation-delay: calc(var(--di, 0) * 0.25s);
+  position: relative;
+  z-index: 1;
+}
+
+/* Dernier dot (···) grisé */
+.guide-gen-step-dot:last-child .guide-gen-dot {
+  background: rgba(107,122,150,0.2);
+  box-shadow: none;
+  animation: none;
+}
+
+@keyframes dotGlow {
+  0%, 100% { box-shadow: 0 2px 6px rgba(37,99,235,0.2); }
+  50% { box-shadow: 0 2px 12px rgba(37,99,235,0.45); transform: scale(1.1); }
+}
+
+.guide-gen-dot-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .66rem;
+  color: var(--muted);
+  white-space: nowrap;
+  font-weight: 500;
+}
+.guide-gen-step-dot:last-child .guide-gen-dot-label { color: rgba(107,122,150,0.5); }
+
+/* Bouton */
+.guide-gen-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--navy);
+  color: white;
+  font-family: 'Sora', sans-serif;
+  font-size: .92rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all .22s ease;
+  box-shadow: 0 4px 18px rgba(7,16,31,0.22), inset 0 1px 0 rgba(255,255,255,0.08);
+  letter-spacing: -.01em;
+}
+.guide-gen-btn:hover { background: var(--navy-mid); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(7,16,31,0.28); }
+.guide-gen-btn:active { transform: scale(0.98); }
+
+.guide-gen-btn-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform .2s ease;
+}
+.guide-gen-btn:hover .guide-gen-btn-arrow { transform: translateX(3px); }
+
+/* ══ ÉTAPES ══ */
+.guide-steps-section {
+  display: flex;
+  flex-direction: column;
+  animation: fadeUp .5s ease .08s both;
+}
+
+.guide-step {
+  display: flex;
+  gap: 18px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .4s ease var(--step-delay,0s), transform .4s ease var(--step-delay,0s);
+}
+.guide-step--visible { opacity: 1; transform: translateY(0); }
+
+.guide-step-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 34px;
+}
+
+.guide-step-num {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: white;
+  font-family: 'Sora', sans-serif;
+  font-size: .75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(7,16,31,0.16);
+  transition: background .3s ease, box-shadow .3s ease;
+}
+.guide-step-num--done { background: #22c55e; box-shadow: 0 2px 8px rgba(34,197,94,0.3); }
+
+.guide-step-line {
+  width: 2px;
+  flex: 1;
+  min-height: 20px;
+  background: linear-gradient(to bottom, rgba(7,16,31,0.1), rgba(7,16,31,0.03));
+  margin: 5px 0;
+  border-radius: 2px;
+}
+
+.guide-step-body {
+  flex: 1;
+  padding-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.guide-step-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: rgba(37,99,235,0.08);
+  padding: 3px 9px;
+  border-radius: 50px;
+  width: fit-content;
+  margin-top: 4px;
+}
+
+.guide-step-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -.02em;
+  line-height: 1.3;
+}
+
+.guide-step-img {
+  width: 100%;
+  aspect-ratio: 16/7;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(37,99,235,0.04), rgba(37,99,235,0.02));
+  border: 1px dashed rgba(37,99,235,0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+}
+
+.guide-step-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .9rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.guide-step-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .79rem;
+  color: var(--navy-mid);
+  background: rgba(37,99,235,0.055);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 10px 10px 0;
+  padding: 9px 13px;
+  line-height: 1.5;
+}
+
+/* ══ CONFIRM iOS ══ */
+.step-confirm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.65);
+  cursor: pointer;
+  transition: all .2s ease;
+  text-align: left;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.step-confirm:hover { background: white; border-color: rgba(0,0,0,0.13); }
+.step-confirm--checked { background: rgba(34,197,94,0.05); border-color: rgba(34,197,94,0.28); }
+
+.step-confirm-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0,0.15);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all .22s ease;
+}
+.step-confirm--checked .step-confirm-check {
+  background: #22c55e;
+  border-color: #22c55e;
+  box-shadow: 0 2px 8px rgba(34,197,94,0.3);
+}
+
+.step-confirm-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .79rem;
+  color: var(--muted);
+  line-height: 1.4;
+  transition: all .2s;
+}
+.step-confirm--checked .step-confirm-label { color: #16a34a; text-decoration: line-through; opacity: .65; }
+
+/* ══ LOADER ══ */
+.guide-step-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0 32px 52px;
+  animation: fadeUp .3s ease both;
+}
+.guide-loading-dots { display: flex; gap: 5px; }
+.guide-loading-dots span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  animation: dotPulse 1.2s ease-in-out infinite;
+}
+.guide-loading-dots span:nth-child(2) { animation-delay: .2s; }
+.guide-loading-dots span:nth-child(3) { animation-delay: .4s; }
+@keyframes dotPulse {
+  0%,80%,100% { opacity:.2; transform:scale(.85); }
+  40% { opacity:1; transform:scale(1); }
+}
+.guide-loading-text { font-family:'DM Sans',sans-serif; font-size:.82rem; color:var(--muted); }
+
+/* ══ PAYWALL ══ */
+.guide-paywall { position: relative; }
+
+/* ══ iOS SHEET ══ */
+.guide-ios-sheet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 28px 32px;
+  background: rgba(248,249,252,0.96);
+  backdrop-filter: blur(40px) saturate(1.5);
+  -webkit-backdrop-filter: blur(40px) saturate(1.5);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 28px;
+  box-shadow:
+    0 -2px 0 rgba(255,255,255,0.9),
+    0 4px 40px rgba(0,0,0,0.07),
+    0 12px 50px rgba(37,99,235,0.07),
+    inset 0 1px 0 rgba(255,255,255,1);
+  text-align: center;
+  animation: sheetRise .4s cubic-bezier(.32,.72,0,1) both;
+}
+
+@keyframes sheetRise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.guide-ios-handle {
+  width: 36px; height: 4px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.1);
+  margin-bottom: 2px;
+}
+
+.guide-ios-icon {
+  width: 60px; height: 60px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, var(--navy), var(--navy-mid));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(7,16,31,0.22), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.guide-ios-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -.025em;
+}
+
+.guide-ios-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .84rem;
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 280px;
+}
+
+.guide-ios-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.guide-ios-price {
+  font-family: 'Sora', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -.04em;
+}
+
+.guide-ios-price-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+.guide-ios-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--navy);
+  color: white;
+  font-family: 'Sora', sans-serif;
+  font-size: .95rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all .2s ease;
+  box-shadow: 0 4px 18px rgba(7,16,31,0.22);
+  letter-spacing: -.01em;
+}
+.guide-ios-btn:hover { background: var(--navy-mid); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(7,16,31,0.28); }
+.guide-ios-btn:active { transform: scale(0.98); }
+
+.guide-ios-legal {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .71rem;
+  color: rgba(15,26,46,0.28);
+}
+
+/* ══ ERREUR ══ */
+.guide-error {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 14px; padding: 40px 24px; text-align: center;
+  animation: fadeUp .4s ease both;
+}
+.guide-error-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(239,68,68,.07); border: 1px solid rgba(239,68,68,.18);
+  display: flex; align-items: center; justify-content: center; color: #ef4444;
+}
+.guide-error-text { font-family:'DM Sans',sans-serif; font-size:.9rem; color:var(--muted); }
+.guide-error-retry {
+  padding: 11px 24px; background: var(--navy); color: white;
+  font-family: 'Sora', sans-serif; font-size: .86rem; font-weight: 600;
+  border: none; border-radius: 10px; cursor: pointer; transition: all .2s;
+}
+.guide-error-retry:hover { background: var(--navy-mid); transform: translateY(-1px); }
+
+/* ══ FOOTER ══ */
+footer { position:relative; z-index:1; width:100%; text-align:center; padding:28px 24px; border-top:1px solid rgba(0,0,0,.07); }
+footer p { font-size:.8rem; color:rgba(15,26,46,.3); }
+footer a { color:rgba(15,26,46,.4); text-decoration:none; }
+footer a:hover { color:var(--text); }
+
+/* ══ RESPONSIVE ══ */
+@media (min-width:641px) and (max-width:1100px) {
+  nav { padding:12px 24px; }
+  .guide-main { padding:104px 28px 80px; }
+}
+
+@media (max-width:640px) {
+  .btn-ghost { display:none; }
+  nav { padding:10px 14px; }
+  .nav-glass { height:54px !important; }
+  .guide-main { padding:110px 18px 80px; gap:36px; }
+  .guide-hero-title { font-size:clamp(1.6rem,7vw,2rem); }
+  .guide-generate-card { padding:28px 20px 26px; gap:20px; border-radius:22px; }
+  .guide-gen-icon { width:58px; height:58px; border-radius:18px; }
+  .guide-gen-icon-wrap { width:76px; height:76px; }
+  .guide-gen-btn { padding:14px 18px; font-size:.88rem; }
+  .guide-ios-sheet { padding:12px 20px 28px; border-radius:24px; }
+  .guide-ios-title { font-size:1.1rem; }
+  .guide-ios-price { font-size:1.75rem; }
+  .guide-ios-btn { padding:14px; font-size:.88rem; }
+  .guide-gen-dot-label { font-size:.6rem; }
+}
+
+@media (max-width:380px) {
+  .guide-main { padding:100px 14px 72px; }
+  .guide-hero-title { font-size:1.5rem; }
+  .guide-step { gap:14px; }
+  .guide-step-num { width:30px; height:30px; font-size:.7rem; }
+  .guide-step-left { width:30px; }
+}
