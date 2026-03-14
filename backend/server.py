@@ -275,7 +275,7 @@ async def register(user: UserCreate, response: Response):
         if token:
             response.set_cookie(
                 key="session_token", value=token,
-                httponly=True, secure=False, samesite="lax", path="/", max_age=7 * 24 * 60 * 60
+                httponly=True, secure=True, samesite="lax", path="/", max_age=7 * 24 * 60 * 60
             )
         return {
             "token": token,
@@ -302,7 +302,7 @@ async def login(user: UserLogin, response: Response):
         token = result.session.access_token
         response.set_cookie(
             key="session_token", value=token,
-            httponly=True, secure=False, samesite="lax", path="/", max_age=7 * 24 * 60 * 60
+            httponly=True, secure=True, samesite="lax", path="/", max_age=7 * 24 * 60 * 60
         )
         meta = result.user.user_metadata or {}
         return {
