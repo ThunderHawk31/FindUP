@@ -183,7 +183,7 @@ export default function Guide() {
           {/* HERO */}
           <section className="guide-hero">
             <h1 className="guide-hero-title">
-              <span className="highlight">{GUIDE_DATA.title}</span>
+              Réparez <span className="highlight">vous-même</span>
             </h1>
           </section>
 
