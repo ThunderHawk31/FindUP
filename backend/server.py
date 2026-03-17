@@ -2,6 +2,7 @@ from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from supabase import create_client, Client
 import os
 import logging
@@ -98,9 +99,9 @@ class AvisResponse(BaseModel):
     date: str
 
 class ChatMessage(BaseModel):
-    message: str
-    image_base64: Optional[str] = None
-    conversation_history: Optional[List[dict]] = None
+    message: str = Field(max_length=2000)
+    image_base64: Optional[str] = Field(None, max_length=5_000_000)
+    conversation_history: Optional[List[dict]] = Field(None, max_length=50)
     location: Optional[dict] = None
 
 class FavoriCreate(BaseModel):
@@ -389,7 +390,7 @@ async def send_chat_message(request: Request, chat_message: ChatMessage):
         "urgence": diagnosis.get("urgence") if diagnosis else None,
         "response": parsed.get("message", ""),
     })
-    resp.set_cookie(key="chat_session", value=session_id, max_age=3600)
+    resp.set_cookie(key="chat_session", value=session_id, max_age=3600, httponly=True, secure=True, samesite="lax")
     return resp
 
 
@@ -462,8 +463,9 @@ def _build_artisan_response(
 # ==================== ARTISAN ROUTES ====================
 
 @api_router.get("/artisans", response_model=List[ArtisanResponse])
-async def get_artisans():
-    r = supabase.table('artisans').select('*').execute()
+async def get_artisans(page: int = 1, limit: int = 20):
+    offset = (page - 1) * limit
+    r = supabase.table('artisans').select('*').range(offset, offset + limit - 1).execute()
     return [_build_artisan_response(a) for a in (r.data or [])]
 
 
@@ -524,14 +526,14 @@ async def get_artisan_avis(artisan_id: str):
 
 @api_router.post("/artisans/{artisan_id}/avis")
 async def create_avis(artisan_id: str, avis: AvisCreate, request: Request):
-    user = await get_current_user(request)
+    user = await require_auth(request)
     doc = {
         "avis_id": f"avis_{uuid.uuid4().hex[:12]}",
         "artisan_id": artisan_id,
         "note": avis.note,
         "commentaire": avis.commentaire,
-        "auteur": user["name"] if user else avis.auteur,
-        "user_id": user["user_id"] if user else None,
+        "auteur": user["name"],
+        "user_id": user["user_id"],
     }
     result = supabase.table('avis').insert(doc).execute()
     inserted = result.data[0] if result.data else {}
@@ -656,12 +658,24 @@ async def root():
     return {"message": "FindUP API — Trouvez le bon artisan près de chez vous"}
 
 
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        return response
+
+
 app.include_router(api_router)
+
+app.add_middleware(SecurityHeadersMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
     allow_origins=os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
 )
