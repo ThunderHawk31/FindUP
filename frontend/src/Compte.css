@@ -1,0 +1,161 @@
+/* ── COMPTE PAGE ── */
+
+.compte-page-layout {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px 0;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.compte-main {
+  flex: 1;
+  padding-top: 32px;
+}
+
+/* Hero */
+.compte-hero {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.compte-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f1f1f1;
+  margin: 0;
+}
+
+/* Profile card */
+.compte-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 28px 24px;
+  margin-bottom: 28px;
+}
+
+.compte-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Sora', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.compte-user-name {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #f1f1f1;
+  margin-bottom: 4px;
+}
+
+.compte-user-email {
+  font-size: 0.88rem;
+  color: #6b7a96;
+}
+
+/* Actions */
+.compte-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 48px;
+}
+
+.compte-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  color: #d1d5db;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.compte-action-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.compte-action-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.compte-action-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.compte-action-btn span:nth-child(2) {
+  flex: 1;
+  text-align: left;
+}
+
+.compte-action-chevron {
+  width: 14px;
+  height: 14px;
+  opacity: 0.3;
+  flex-shrink: 0;
+}
+
+/* Danger button */
+.compte-action-btn--danger {
+  margin-top: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.compte-action-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.compte-action-btn--danger .compte-action-icon {
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .compte-title {
+    font-size: 1.5rem;
+  }
+
+  .compte-profile-card {
+    padding: 22px 18px;
+  }
+
+  .compte-avatar {
+    width: 52px;
+    height: 52px;
+    font-size: 1.15rem;
+  }
+}
