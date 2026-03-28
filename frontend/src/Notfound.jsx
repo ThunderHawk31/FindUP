@@ -4,6 +4,7 @@ import ProfilePanel from './ProfilePanel'
 import './NotFound.css'
 
 export default function NotFound() {
+  const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
   const [profileOpen, setProfileOpen] = useState(false)
 
   return (
@@ -15,7 +16,7 @@ export default function NotFound() {
         <div className="orb orb-3" />
       </div>
 
-      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
+      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
 
       {/* Rubans chantier bleu/blanc en arrière-plan */}
       <div className="nf-tapes-bg" aria-hidden="true">
@@ -39,11 +40,15 @@ export default function NotFound() {
           <div className="nav-inner">
             <a href="/" className="nav-logo">find<span>Up</span></a>
             <div className="nav-actions">
-              <a href="/login" className="btn-ghost">Se connecter</a>
+              {!user && <a href="/login" className="btn-ghost">Se connecter</a>}
               <button className="avatar-btn" onClick={() => setProfileOpen(true)}>
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-                </svg>
+                {user ? (
+                  <span className="avatar-initials">{user.initials}</span>
+                ) : (
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                  </svg>
+                )}
               </button>
             </div>
           </div>

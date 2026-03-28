@@ -146,6 +146,7 @@ function StepCard({ step, index, visible }) {
 }
 
 export default function Guide() {
+  const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
   const [profileOpen, setProfileOpen] = useState(false)
   const [unlocked, setUnlocked] = useState(false)
   const { phase, visibleSteps, generate, retry } = useStreamingGuide()
@@ -157,7 +158,7 @@ export default function Guide() {
       <div className="bg-orbs">
         <div className="orb orb-1"/><div className="orb orb-2"/><div className="orb orb-3"/>
       </div>
-      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
+      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
 
       <div className="guide-page-layout">
         <nav>
@@ -169,9 +170,13 @@ export default function Guide() {
                 </svg>
               </a>
               <div className="nav-actions">
-                <a href="/login" className="btn-ghost">Se connecter</a>
+                {!user && <a href="/login" className="btn-ghost">Se connecter</a>}
                 <button className="avatar-btn" onClick={() => setProfileOpen(true)}>
-                  <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                  {user ? (
+                    <span className="avatar-initials">{user.initials}</span>
+                  ) : (
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                  )}
                 </button>
               </div>
             </div>

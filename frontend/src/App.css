@@ -211,3 +211,6 @@ footer a:hover { color: var(--text); }
     transform: none;
   }
 }
+
+.avatar-initials { color: white; font-family: 'Sora', sans-serif; font-weight: 600; font-size: 0.95rem; }
+.panel-avatar .avatar-initials { font-size: 1.6rem; }
