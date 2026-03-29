@@ -1,5 +1,28 @@
 /* ── COMPTE PAGE ── */
 
+/* Back button */
+.nav-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--navy);
+  text-decoration: none;
+  transition: all .2s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+.nav-back:hover {
+  background: white;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+  transform: translateX(-2px);
+}
+.nav-back svg { flex-shrink: 0; }
+
 .compte-page-layout {
   position: relative;
   z-index: 1;
@@ -7,45 +30,62 @@
   display: flex;
   flex-direction: column;
   padding: 24px 20px 0;
-  max-width: 560px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .compte-main {
   flex: 1;
-  padding-top: 32px;
+  padding-top: 80px;
 }
 
-/* Hero */
+/* ── Hero ── */
 .compte-hero {
   text-align: center;
-  margin-bottom: 36px;
+  margin-bottom: 40px;
+  animation: fadeUp .65s ease .05s both;
 }
 
 .compte-title {
   font-family: 'Sora', sans-serif;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #f1f1f1;
+  font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -.035em;
+  color: var(--navy);
   margin: 0;
 }
 
-/* Profile card */
+.compte-title .split-line {
+  display: block;
+}
+
+.compte-title .highlight {
+  background: linear-gradient(135deg, var(--blue) 0%, #1a4fc4 45%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Profile Card ── */
 .compte-profile-card {
   display: flex;
   align-items: center;
   gap: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: 20px;
   padding: 28px 24px;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  animation: fadeUp .65s ease .1s both;
 }
 
 .compte-avatar {
   width: 64px;
   height: 64px;
   border-radius: 50%;
+  background: linear-gradient(135deg, var(--navy-mid), var(--blue));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -54,27 +94,44 @@
   font-weight: 700;
   color: #fff;
   flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.18);
+  border: 3px solid rgba(255, 255, 255, 0.85);
 }
 
 .compte-user-name {
   font-family: 'Sora', sans-serif;
   font-size: 1.15rem;
-  font-weight: 600;
-  color: #f1f1f1;
+  font-weight: 700;
+  color: var(--navy);
   margin-bottom: 4px;
 }
 
 .compte-user-email {
   font-size: 0.88rem;
-  color: #6b7a96;
+  color: var(--muted);
 }
 
-/* Actions */
+/* ── Section ── */
+.compte-section {
+  margin-bottom: 20px;
+  animation: fadeUp .65s ease .15s both;
+}
+
+.compte-section-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 12px 4px;
+}
+
+/* ── Actions ── */
 .compte-actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 48px;
+  gap: 6px;
 }
 
 .compte-action-btn {
@@ -83,35 +140,39 @@
   gap: 14px;
   width: 100%;
   padding: 16px 18px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: 14px;
-  color: #d1d5db;
-  font-family: 'Sora', sans-serif;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: all .22s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .compte-action-btn:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateX(3px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
 .compte-action-icon {
-  width: 20px;
-  height: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.07);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  opacity: 0.6;
+  color: var(--blue);
 }
 
 .compte-action-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .compte-action-btn span:nth-child(2) {
@@ -122,31 +183,47 @@
 .compte-action-chevron {
   width: 14px;
   height: 14px;
-  opacity: 0.3;
+  color: var(--muted);
+  opacity: 0.4;
   flex-shrink: 0;
+  transition: opacity .2s, transform .2s;
 }
 
-/* Danger button */
+.compte-action-btn:hover .compte-action-chevron {
+  opacity: 0.7;
+  transform: translateX(2px);
+}
+
+/* ── Danger Button ── */
 .compte-action-btn--danger {
-  margin-top: 8px;
-  background: rgba(239, 68, 68, 0.08);
-  border-color: rgba(239, 68, 68, 0.15);
-  color: #f87171;
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
 }
 
 .compte-action-btn--danger:hover {
-  background: rgba(239, 68, 68, 0.14);
-  border-color: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.22);
+  transform: translateX(3px);
 }
 
 .compte-action-btn--danger .compte-action-icon {
-  opacity: 0.8;
+  background: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .compte-main {
+    padding-top: 66px;
+  }
+
+  .compte-hero {
+    margin-bottom: 28px;
+  }
+
   .compte-title {
-    font-size: 1.5rem;
+    font-size: clamp(1.8rem, 8vw, 2.4rem);
   }
 
   .compte-profile-card {
@@ -158,4 +235,13 @@
     height: 52px;
     font-size: 1.15rem;
   }
+
+  .compte-action-btn {
+    padding: 14px 16px;
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
 }

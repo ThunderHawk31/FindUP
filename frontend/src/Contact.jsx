@@ -8,12 +8,17 @@ export default function Contact() {
   const [profileOpen, setProfileOpen] = useState(false)
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
+  const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
 
   function handleSubmit(e) {
     e.preventDefault()
-    if (!subject || !message.trim()) return
-    setSent(true)
+    if (!subject || !message.trim() || sending) return
+    setSending(true)
+    setTimeout(() => {
+      setSending(false)
+      setSent(true)
+    }, 1500)
   }
 
   return (
@@ -30,7 +35,11 @@ export default function Contact() {
         <nav>
           <GlassSurface width="100%" height={70} borderRadius={100} backgroundOpacity={0.21} blur={14} brightness={55} distortionScale={-60} className="nav-glass">
             <div className="nav-inner">
-              <a href="/" className="nav-logo">find<span>Up</span></a>
+              <a href="/" className="nav-back" onClick={e => { e.preventDefault(); window.history.back() }} title="Retour">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="15" height="15">
+                  <path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </a>
               <div className="nav-actions">
                 {!user && <a href="/login" className="btn-ghost">Se connecter</a>}
                 <button className="avatar-btn" onClick={() => setProfileOpen(true)}>
@@ -47,48 +56,56 @@ export default function Contact() {
 
         <main className="contact-main">
           <section className="contact-hero">
-            <h1 className="contact-title">Nous contacter</h1>
+            <h1 className="contact-title">
+              <span className="split-line">Nous</span>
+              <span className="split-line highlight">contacter</span>
+            </h1>
             <p className="contact-sub">Une question, un problème ou une suggestion ? Écrivez-nous.</p>
           </section>
 
           {sent ? (
             <div className="contact-success">
               <div className="contact-success-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="32" height="32">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="40" height="40">
                   <circle cx="12" cy="12" r="10"/>
                   <path d="M8 12l3 3 5-5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
               <h2 className="contact-success-title">Message envoyé !</h2>
               <p className="contact-success-text">Nous reviendrons vers vous dans les meilleurs délais.</p>
+              <button className="contact-back-btn" onClick={() => setSent(false)}>
+                Envoyer un autre message
+              </button>
             </div>
           ) : (
-            <section className="contact-form-wrap">
-              <GlassSurface width="100%" height="auto" borderRadius={22} backgroundOpacity={0.15} blur={16} brightness={50} distortionScale={-60} className="contact-glass">
-                <form className="contact-form" onSubmit={handleSubmit}>
-                  <label className="contact-label">
-                    Sujet
-                    <select className="contact-select" value={subject} onChange={e => setSubject(e.target.value)} required>
-                      <option value="" disabled>Choisissez un sujet…</option>
-                      <option value="bug">Signaler un bug</option>
-                      <option value="question">Question générale</option>
-                      <option value="abo">Abonnement & facturation</option>
-                      <option value="suggestion">Suggestion</option>
-                      <option value="autre">Autre</option>
-                    </select>
-                  </label>
-                  <label className="contact-label">
-                    Message
-                    <textarea className="contact-textarea" value={message} onChange={e => setMessage(e.target.value)} placeholder="Décrivez votre demande…" rows={5} required />
-                  </label>
-                  <button type="submit" className="contact-submit">
-                    Envoyer
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
-                      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </button>
-                </form>
-              </GlassSurface>
+            <section className="contact-form-card">
+              <form className="contact-form" onSubmit={handleSubmit}>
+                <label className="contact-label">
+                  <span className="contact-label-text">Sujet</span>
+                  <select className="contact-select" value={subject} onChange={e => setSubject(e.target.value)} required>
+                    <option value="" disabled>Choisissez un sujet…</option>
+                    <option value="bug">Signaler un bug</option>
+                    <option value="question">Question générale</option>
+                    <option value="abo">Abonnement & facturation</option>
+                    <option value="suggestion">Suggestion</option>
+                    <option value="autre">Autre</option>
+                  </select>
+                </label>
+                <label className="contact-label">
+                  <span className="contact-label-text">Message</span>
+                  <textarea className="contact-textarea" value={message} onChange={e => setMessage(e.target.value)} placeholder="Décrivez votre demande…" rows={5} required />
+                </label>
+                <button type="submit" className={`contact-submit${sending ? ' contact-submit--loading' : ''}`} disabled={sending}>
+                  {sending ? 'Envoi en cours...' : (
+                    <>
+                      Envoyer
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </>
+                  )}
+                </button>
+              </form>
             </section>
           )}
 
