@@ -51,7 +51,7 @@ export default function ResumeModal({ onResume, onNew }) {
                         fontWeight: 600, cursor: 'pointer', transition: 'all .2s',
                         boxShadow: '0 2px 12px rgba(7,16,31,0.2)'
                     }}>
-                        Reprendre ✦
+                        Reprendre
                     </button>
                 </div>
             </div>
