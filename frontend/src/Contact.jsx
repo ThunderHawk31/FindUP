@@ -1,18 +1,41 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
 import ProfilePanel from './ProfilePanel'
 import './Contact.css'
 
 const WEB3FORMS_KEY = '23c8ac38-2ec9-49e7-b550-93d7e814eecb'
 
+const SUBJECTS = [
+  { id: 'bug', label: 'Signaler un bug' },
+  { id: 'question', label: 'Question générale' },
+  { id: 'abo', label: 'Abonnement & facturation' },
+  { id: 'suggestion', label: 'Suggestion' },
+  { id: 'autre', label: 'Autre' }
+]
+
 export default function Contact() {
   const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
   const [profileOpen, setProfileOpen] = useState(false)
+
   const [subject, setSubject] = useState('')
+  const [subjectOpen, setSubjectOpen] = useState(false)
   const [message, setMessage] = useState('')
+
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(null)
+
+  const dropdownRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setSubjectOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -27,7 +50,7 @@ export default function Contact() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           access_key: WEB3FORMS_KEY,
-          subject: `findUp — ${subject}`,
+          subject: `findUp — ${SUBJECTS.find(s => s.id === subject)?.label || subject}`,
           message: message,
           from_name: user?.name || 'Utilisateur findUp',
           email: user?.email || 'inconnu@findup.fr',
@@ -111,14 +134,40 @@ export default function Contact() {
               <form className="contact-form" onSubmit={handleSubmit}>
                 <label className="contact-label">
                   <span className="contact-label-text">Sujet</span>
-                  <select className="contact-select" value={subject} onChange={e => setSubject(e.target.value)} required>
-                    <option value="" disabled>Choisissez un sujet…</option>
-                    <option value="bug">Signaler un bug</option>
-                    <option value="question">Question générale</option>
-                    <option value="abo">Abonnement & facturation</option>
-                    <option value="suggestion">Suggestion</option>
-                    <option value="autre">Autre</option>
-                  </select>
+
+                  <div className="custom-select-wrapper" ref={dropdownRef}>
+                    <div
+                      className={`custom-select-trigger ${subjectOpen ? 'open' : ''} ${subject ? 'selected' : ''}`}
+                      onClick={() => setSubjectOpen(!subjectOpen)}
+                    >
+                      <span>{subject ? SUBJECTS.find(s => s.id === subject)?.label : 'Choisissez un sujet…'}</span>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="14" height="14">
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </div>
+
+                    {subjectOpen && (
+                      <div className="custom-select-options">
+                        {SUBJECTS.map((s) => (
+                          <div
+                            key={s.id}
+                            className={`custom-select-option ${subject === s.id ? 'active' : ''}`}
+                            onClick={() => {
+                              setSubject(s.id)
+                              setSubjectOpen(false)
+                            }}
+                          >
+                            {s.label}
+                            {subject === s.id && (
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" width="14" height="14">
+                                <path d="M20 6L9 17l-5-5" />
+                              </svg>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </label>
 
                 <label className="contact-label">
