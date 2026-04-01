@@ -1,0 +1,452 @@
+/* ── SECURITE PAGE ── */
+
+.sec-page-layout {
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px 0;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.sec-main {
+    flex: 1;
+    padding-top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ── Hero ── */
+.sec-hero {
+    text-align: center;
+    margin-bottom: 12px;
+    animation: fadeUp .65s ease .05s both;
+}
+
+.sec-title {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -.035em;
+    color: var(--navy);
+    margin: 0 0 10px;
+}
+
+.sec-title .split-line {
+    display: block;
+}
+
+.sec-sub {
+    font-size: .95rem;
+    font-weight: 300;
+    color: var(--muted);
+    margin: 0;
+}
+
+/* ── Card ── */
+.sec-card {
+    background: rgba(255, 255, 255, .75);
+    border: 1px solid rgba(255, 255, 255, .95);
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .04), inset 0 1px 0 rgba(255, 255, 255, .9);
+    animation: fadeUp .65s ease .1s both;
+}
+
+.sec-card--info {
+    animation-delay: .14s;
+}
+
+.sec-card--danger {
+    animation-delay: .18s;
+    border-color: rgba(220, 38, 38, .15);
+    background: rgba(255, 241, 241, .6);
+}
+
+/* ── Card header ── */
+.sec-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.sec-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(37, 99, 235, .08);
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sec-card-icon--gold {
+    background: rgba(212, 168, 83, .1);
+    color: var(--gold);
+}
+
+.sec-card-title {
+    font-family: 'Sora', sans-serif;
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.sec-card-desc {
+    font-size: .8rem;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+/* ── Success banner ── */
+.sec-success-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f0fdf4;
+    border: 1px solid rgba(22, 163, 74, .2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: .84rem;
+    color: #16a34a;
+    font-weight: 500;
+    margin-bottom: 18px;
+}
+
+/* ── Form ── */
+.sec-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sec-label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.sec-label-text {
+    font-family: 'Sora', sans-serif;
+    font-size: .76rem;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: .02em;
+}
+
+.sec-input-wrap {
+    position: relative;
+}
+
+.sec-input-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    opacity: .5;
+    pointer-events: none;
+}
+
+.sec-input {
+    width: 100%;
+    padding: 12px 42px 12px 38px;
+    background: rgba(255, 255, 255, .7);
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 12px;
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+}
+
+.sec-input:focus {
+    border-color: rgba(37, 99, 235, .35);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+    background: rgba(255, 255, 255, .95);
+}
+
+.sec-input--error {
+    border-color: rgba(220, 38, 38, .4) !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .07) !important;
+}
+
+.sec-input::placeholder {
+    color: rgba(15, 26, 46, .25);
+    letter-spacing: .08em;
+}
+
+.sec-eye-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    opacity: .5;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: opacity .2s;
+}
+
+.sec-eye-btn:hover {
+    opacity: .8;
+}
+
+.sec-error-msg {
+    font-size: .75rem;
+    color: #dc2626;
+}
+
+/* ── Strength ── */
+.sec-strength {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, .5);
+    border: 1px solid rgba(0, 0, 0, .05);
+    border-radius: 10px;
+    margin-top: -4px;
+}
+
+.sec-strength-bars {
+    display: flex;
+    gap: 5px;
+}
+
+.sec-strength-bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 4px;
+    transition: background .3s ease;
+}
+
+.sec-strength-label {
+    font-size: .76rem;
+    font-weight: 700;
+    font-family: 'Sora', sans-serif;
+    letter-spacing: .01em;
+}
+
+.sec-strength-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+}
+
+.sec-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: .74rem;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+}
+
+.sec-check--ok {
+    color: #16a34a;
+}
+
+/* ── Actions ── */
+.sec-actions {
+    margin-top: 4px;
+}
+
+.sec-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 26px;
+    border: none;
+    border-radius: 50px;
+    background: var(--navy);
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .22s ease;
+    box-shadow: 0 2px 12px rgba(7, 16, 31, .18);
+}
+
+.sec-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(7, 16, 31, .22);
+}
+
+.sec-submit:active {
+    transform: translateY(0);
+}
+
+.sec-submit--loading {
+    opacity: .7;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.sec-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, .35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Info list ── */
+.sec-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sec-info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sec-info-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.sec-info-dot--ok {
+    background: #16a34a;
+}
+
+.sec-info-dot--warn {
+    background: #f59e0b;
+}
+
+.sec-info-text {
+    flex: 1;
+    font-size: .87rem;
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+}
+
+.sec-info-badge {
+    font-size: .72rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.sec-info-badge--ok {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.sec-info-badge--warn {
+    background: #fffbeb;
+    color: #d97706;
+}
+
+.sec-info-time {
+    font-size: .78rem;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+}
+
+/* ── Danger zone ── */
+.sec-danger-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Sora', sans-serif;
+    font-size: .85rem;
+    font-weight: 700;
+    color: #dc2626;
+    margin-bottom: 16px;
+}
+
+.sec-delete-btn {
+    padding: 10px 22px;
+    border: 1.5px solid rgba(220, 38, 38, .35);
+    border-radius: 50px;
+    background: transparent;
+    color: #dc2626;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.sec-delete-btn:hover {
+    background: rgba(220, 38, 38, .06);
+    border-color: #dc2626;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+    .sec-main {
+        padding-top: 66px;
+    }
+
+    .sec-submit {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ── Footer ── */
+footer {
+    margin-top: 48px;
+    padding: 20px 0 28px;
+    text-align: center;
+}
+
+footer p {
+    font-size: .78rem;
+    color: var(--muted);
+    opacity: .6;
+    margin: 0;
+}
+
+footer a {
+    color: var(--muted);
+    text-decoration: none;
+}
+
+footer a:hover {
+    opacity: .7;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
