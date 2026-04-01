@@ -11,6 +11,9 @@ import Historique from './Historique.jsx'
 import Compte from './Compte.jsx'
 import Contact from './Contact.jsx'
 import NotFound from './Notfound.jsx'
+import EditInfos from './EditInfos.jsx'
+import Achats from './Achats.jsx'
+import Securite from './Securite.jsx'
 
 const path = window.location.pathname
 const root = createRoot(document.getElementById('root'))
@@ -29,6 +32,12 @@ if (path === '/login') {
   root.render(<StrictMode><Historique /></StrictMode>)
 } else if (path === '/compte') {
   root.render(<StrictMode><Compte /></StrictMode>)
+} else if (path === '/compte/infos') {
+  root.render(<StrictMode><EditInfos /></StrictMode>)
+} else if (path === '/compte/achats') {
+  root.render(<StrictMode><Achats /></StrictMode>)
+} else if (path === '/compte/securite') {
+  root.render(<StrictMode><Securite /></StrictMode>)
 } else if (path === '/contact') {
   root.render(<StrictMode><Contact /></StrictMode>)
 } else if (path === '/') {

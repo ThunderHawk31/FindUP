@@ -23,7 +23,7 @@ export default function Compte() {
             <div className="nav-inner">
               <a href="/" className="nav-back" onClick={e => { e.preventDefault(); window.history.back() }} title="Retour">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="15" height="15">
-                  <path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
               <div className="nav-actions">
@@ -63,7 +63,7 @@ export default function Compte() {
           <section className="compte-section">
             <h2 className="compte-section-title">Paramètres</h2>
             <div className="compte-actions">
-              <button className="compte-action-btn">
+              <a href="/compte/infos" className="compte-action-btn">
                 <span className="compte-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -72,20 +72,21 @@ export default function Compte() {
                 </span>
                 <span>Modifier mes informations</span>
                 <svg className="compte-action-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </button>
+              </a>
 
-              <button className="compte-action-btn">
+              <a href="/compte/achats" className="compte-action-btn">
                 <span className="compte-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
                   </svg>
                 </span>
                 <span>Mes achats</span>
                 <svg className="compte-action-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </button>
+              </a>
 
-              <button className="compte-action-btn">
+              <a href="/compte/securite" className="compte-action-btn">
                 <span className="compte-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -94,7 +95,7 @@ export default function Compte() {
                 </span>
                 <span>Sécurité et mot de passe</span>
                 <svg className="compte-action-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </button>
+              </a>
             </div>
           </section>
 

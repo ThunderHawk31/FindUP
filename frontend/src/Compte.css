@@ -16,12 +16,16 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
+
 .nav-back:hover {
   background: white;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
   transform: translateX(-2px);
 }
-.nav-back svg { flex-shrink: 0; }
+
+.nav-back svg {
+  flex-shrink: 0;
+}
 
 .compte-page-layout {
   position: relative;
@@ -150,6 +154,8 @@
   cursor: pointer;
   transition: all .22s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  color: inherit;
 }
 
 .compte-action-btn:hover {
@@ -242,6 +248,17 @@
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.compte-action-btn {
+  text-decoration: none;
 }
