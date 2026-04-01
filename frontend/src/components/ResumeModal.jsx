@@ -14,13 +14,6 @@ export default function ResumeModal({ onResume, onNew }) {
                 maxWidth: '360px', width: '100%', textAlign: 'center',
                 boxShadow: '0 20px 60px rgba(0,0,0,0.15)'
             }}>
-                <div style={{
-                    width: '48px', height: '48px', borderRadius: '50%',
-                    background: 'linear-gradient(135deg, var(--blue), var(--navy-mid))',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    margin: '0 auto 16px', fontSize: '1.2rem', color: 'white'
-                }}>✦</div>
-
                 <p style={{
                     fontFamily: 'Sora, sans-serif', fontWeight: 800,
                     fontSize: '1.1rem', color: 'var(--navy)', marginBottom: '8px'
