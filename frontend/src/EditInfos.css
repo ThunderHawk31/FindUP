@@ -1,0 +1,301 @@
+/* ── EDIT INFOS PAGE ── */
+
+.ei-page-layout {
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px 0;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.ei-main {
+    flex: 1;
+    padding-top: 80px;
+}
+
+/* ── Hero ── */
+.ei-hero {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeUp .65s ease .05s both;
+}
+
+.ei-title {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -.035em;
+    color: var(--navy);
+    margin: 0 0 10px;
+}
+
+.ei-title .split-line {
+    display: block;
+}
+
+.ei-sub {
+    font-size: .95rem;
+    font-weight: 300;
+    color: var(--muted);
+    margin: 0;
+}
+
+/* ── Card ── */
+.ei-card {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 22px;
+    padding: 28px 24px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .04), inset 0 1px 0 rgba(255, 255, 255, .9);
+    animation: fadeUp .65s ease .1s both;
+}
+
+/* ── Avatar row ── */
+.ei-avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, .06);
+}
+
+.ei-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue) 0%, #1a4fc4 100%);
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, .25);
+}
+
+.ei-avatar-name {
+    font-family: 'Sora', sans-serif;
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--navy);
+    display: block;
+}
+
+.ei-avatar-email {
+    font-size: .82rem;
+    color: var(--muted);
+    display: block;
+    margin-top: 2px;
+}
+
+/* ── Form ── */
+.ei-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.ei-fields-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.ei-field-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.ei-field-group--full {
+    width: 100%;
+}
+
+.ei-label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.ei-label-text {
+    font-family: 'Sora', sans-serif;
+    font-size: .76rem;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: .02em;
+}
+
+.ei-input {
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, .7);
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 12px;
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+}
+
+.ei-input:focus {
+    border-color: rgba(37, 99, 235, .35);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+    background: rgba(255, 255, 255, .95);
+}
+
+.ei-input--error {
+    border-color: rgba(220, 38, 38, .4) !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .07) !important;
+}
+
+.ei-input::placeholder {
+    color: rgba(15, 26, 46, .3);
+}
+
+/* Input with icon */
+.ei-input-icon-wrap {
+    position: relative;
+}
+
+.ei-input-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    opacity: .6;
+    pointer-events: none;
+}
+
+.ei-input--with-icon {
+    padding-left: 38px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ei-error-msg {
+    font-size: .75rem;
+    color: #dc2626;
+    margin-top: 2px;
+}
+
+/* ── Actions ── */
+.ei-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.ei-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 26px;
+    border: none;
+    border-radius: 50px;
+    background: var(--navy);
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .22s ease;
+    box-shadow: 0 2px 12px rgba(7, 16, 31, .18);
+}
+
+.ei-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(7, 16, 31, .22);
+}
+
+.ei-submit:active {
+    transform: translateY(0);
+}
+
+.ei-submit--loading {
+    opacity: .7;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.ei-submit--saved {
+    background: #16a34a;
+    pointer-events: none;
+}
+
+.ei-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, .35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.ei-cancel {
+    padding: 12px 22px;
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 50px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: .88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.ei-cancel:hover {
+    background: rgba(255, 255, 255, .7);
+    color: var(--navy);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+    .ei-main {
+        padding-top: 66px;
+    }
+
+    .ei-fields-row {
+        grid-template-columns: 1fr;
+    }
+
+    .ei-actions {
+        flex-direction: column;
+    }
+
+    .ei-submit,
+    .ei-cancel {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
