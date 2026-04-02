@@ -55,7 +55,6 @@ function StoreSheet({ product, onClose }) {
       <div className="sheet-container">
         <div className="sheet-handle" />
 
-        {/* Produit */}
         <div className="sheet-product-row">
           <div className="sheet-product-img">
             {product.img
@@ -72,16 +71,8 @@ function StoreSheet({ product, onClose }) {
 
         <p className="sheet-label">Choisissez où acheter</p>
 
-        {/* Cards stores */}
         <div className="sheet-stores">
-
-          {/* Amazon */}
-          <a
-            href={product.amazon}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sheet-store-card sheet-store-card--amazon"
-          >
+          <a href={product.amazon} target="_blank" rel="noopener noreferrer" className="sheet-store-card sheet-store-card--amazon">
             <div className="sheet-store-logo-wrap sheet-store-logo-wrap--amazon">
               <img src="/Amazon.png" alt="Amazon" className="sheet-store-logo" />
             </div>
@@ -96,13 +87,7 @@ function StoreSheet({ product, onClose }) {
             </div>
           </a>
 
-          {/* Leroy Merlin */}
-          <a
-            href={product.lm}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sheet-store-card sheet-store-card--lm"
-          >
+          <a href={product.lm} target="_blank" rel="noopener noreferrer" className="sheet-store-card sheet-store-card--lm">
             <div className="sheet-store-logo-wrap sheet-store-logo-wrap--lm">
               <img src="/Leroy-Merlin.png" alt="Leroy Merlin" className="sheet-store-logo" />
             </div>
@@ -206,28 +191,50 @@ export default function DIY() {
             <p className="diy-hero-sub">
               Notre IA a analysé votre problème et sélectionné exactement ce qu'il vous faut.
             </p>
-            <div className="diy-fallback-row">
-              <span className="diy-fallback-text">Trop complexe ?</span>
-              <a href={`/results${q ? `?q=${encodeURIComponent(q)}` : ''}`} className="diy-fallback-link">
-                Trouver un artisan
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="13" height="13">
+          </section>
+
+          {/* GUIDE CARD */}
+          <section className="diy-guide-section">
+            <div className="diy-guide-card">
+
+              {/* Titre + description */}
+              <div className="diy-guide-content">
+                <h2 className="diy-guide-title">
+                  Réparez sans risque<br />
+                  <span className="highlight">étape par étape</span>
+                </h2>
+                <p className="diy-guide-desc">
+                  Notre IA génère un guide illustré spécifiquement pour votre problème —
+                  outils nécessaires, durée estimée, points de vigilance.
+                </p>
+              </div>
+
+              {/* Steps preview */}
+              <div className="diy-guide-steps-preview">
+                {[
+                  { n: '1', label: 'Diagnostic du problème' },
+                  { n: '2', label: 'Matériel & outils requis' },
+                  { n: '3', label: 'Procédure illustrée' },
+                ].map((s) => (
+                  <div key={s.n} className="diy-guide-step-pill">
+                    <span className="diy-guide-step-num">{s.n}</span>
+                    <span className="diy-guide-step-label">{s.label}</span>
+                  </div>
+                ))}
+                <div className="diy-guide-step-pill diy-guide-step-pill--more">
+                  <span className="diy-guide-step-label">+ bien plus…</span>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <a href="/guide" className="diy-guide-cta">
+                Générer mon guide
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="15" height="15">
                   <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
-            </div>
-          </section>
 
-          {/* GUIDE TEASER */}
-          <section className="diy-guide-section">
-            <a href="/guide" className="diy-guide-teaser">
-              <div className="diy-guide-teaser-text">
-                <span className="diy-guide-teaser-hook">Vous voulez réparer sans risque d'erreur ?</span>
-                <span className="diy-guide-teaser-sub">Voir le guide personnalisé</span>
-              </div>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="16" height="16" className="diy-guide-teaser-arrow">
-                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
+            </div>
           </section>
 
           {/* PRODUITS */}

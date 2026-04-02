@@ -135,7 +135,6 @@ nav {
   padding: 0 8px 0 12px;
 }
 
-/* Bouton retour — même style que Chat */
 .nav-back {
   display: inline-flex;
   align-items: center;
@@ -292,72 +291,168 @@ nav {
   gap: 8px;
 }
 
-/* ══ COMMENT CA MARCHE — simple, cochable ══ */
-.diy-how-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  animation: fadeUp .65s ease .1s both;
+/* ══ GUIDE CARD ══ */
+.diy-guide-section {
+  animation: fadeUp .65s ease .24s both;
 }
 
-.diy-how-title {
+.diy-guide-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 28px 26px;
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.82) 0%,
+      rgba(235, 243, 255, 0.72) 100%);
+  backdrop-filter: blur(16px) saturate(1.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  border: 1.5px solid rgba(37, 99, 235, 0.18);
+  border-radius: 24px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 4px 24px rgba(37, 99, 235, 0.09);
+  transition: box-shadow .22s ease, border-color .22s ease;
+}
+
+.diy-guide-card:hover {
+  border-color: rgba(37, 99, 235, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 8px 36px rgba(37, 99, 235, 0.14);
+}
+
+/* Badge */
+.diy-guide-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 5px 12px;
+  border-radius: 50px;
+  background: rgba(37, 99, 235, 0.09);
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--blue);
+  letter-spacing: .01em;
+}
+
+.diy-guide-badge svg {
+  flex-shrink: 0;
+  color: var(--blue);
+}
+
+/* Titre + desc */
+.diy-guide-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.diy-guide-title {
   font-family: 'Sora', sans-serif;
-  font-size: 1.45rem;
+  font-size: clamp(1.35rem, 3.5vw, 1.7rem);
   font-weight: 800;
   color: var(--navy);
-  letter-spacing: -.025em;
+  line-height: 1.15;
+  letter-spacing: -.03em;
 }
 
-.diy-how-steps {
+.diy-guide-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .87rem;
+  color: var(--muted);
+  line-height: 1.65;
+  font-weight: 400;
+  max-width: 440px;
+}
+
+/* Steps preview */
+.diy-guide-steps-preview {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
+  flex-wrap: wrap;
+  gap: 7px;
 }
 
-.diy-how-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
+.diy-guide-step-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 13px 6px 9px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(37, 99, 235, 0.12);
+  border-radius: 50px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Rond noir numéroté */
-.diy-how-circle {
-  width: 32px;
-  height: 32px;
+.diy-guide-step-pill--more {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  padding-left: 4px;
+}
+
+.diy-guide-step-num {
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--navy);
   color: white;
   font-family: 'Sora', sans-serif;
-  font-size: .72rem;
+  font-size: .65rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-top: 1px;
-  letter-spacing: .01em;
 }
 
-.diy-how-content {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.diy-how-step-title {
-  font-family: 'Sora', sans-serif;
-  font-size: .92rem;
-  font-weight: 700;
-  color: var(--navy);
-  letter-spacing: -.01em;
-}
-
-.diy-how-step-desc {
+.diy-guide-step-label {
   font-family: 'DM Sans', sans-serif;
-  font-size: .81rem;
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--navy);
+}
+
+.diy-guide-step-pill--more .diy-guide-step-label {
   color: var(--muted);
-  line-height: 1.55;
-  font-weight: 300;
+  font-style: italic;
+  font-size: .75rem;
+}
+
+/* CTA */
+.diy-guide-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 14px 24px;
+  background: var(--navy);
+  color: white;
+  font-family: 'Sora', sans-serif;
+  font-size: .9rem;
+  font-weight: 700;
+  border-radius: 50px;
+  text-decoration: none;
+  letter-spacing: -.01em;
+  box-shadow:
+    0 2px 12px rgba(7, 16, 31, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all .2s ease;
+  -webkit-tap-highlight-color: transparent;
+  align-self: stretch;
+}
+
+.diy-guide-cta:hover {
+  background: #1B3A6B;
+  box-shadow: 0 5px 22px rgba(7, 16, 31, 0.28);
+  transform: translateY(-1px);
+  gap: 12px;
+}
+
+.diy-guide-cta:active {
+  transform: scale(0.985);
 }
 
 /* ══ SECTION PRODUITS ══ */
@@ -418,7 +513,6 @@ nav {
   transform: scale(0.99);
 }
 
-/* Ligne principale */
 .diy-product-row {
   display: flex;
   flex-direction: row;
@@ -426,14 +520,12 @@ nav {
   gap: 14px;
 }
 
-/* Grille */
 .diy-products-grid {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Image produit */
 .diy-product-img {
   width: 64px;
   height: 64px;
@@ -464,7 +556,6 @@ nav {
   background: rgba(37, 99, 235, 0.1);
 }
 
-/* Texte */
 .diy-product-text {
   flex: 1;
   min-width: 0;
@@ -488,7 +579,6 @@ nav {
   line-height: 1.35;
 }
 
-/* Prix */
 .diy-product-price {
   font-family: 'Sora', sans-serif;
   font-size: .95rem;
@@ -498,7 +588,6 @@ nav {
   flex-shrink: 0;
 }
 
-/* Chevron → */
 .diy-product-chevron {
   color: rgba(37, 99, 235, 0.35);
   flex-shrink: 0;
@@ -561,7 +650,6 @@ nav {
   gap: 14px;
 }
 
-/* Handle */
 .sheet-handle {
   width: 36px;
   height: 4px;
@@ -571,7 +659,6 @@ nav {
   flex-shrink: 0;
 }
 
-/* Produit récap */
 .sheet-product-row {
   display: flex;
   align-items: center;
@@ -642,7 +729,6 @@ nav {
   flex-shrink: 0;
 }
 
-/* Label */
 .sheet-label {
   font-family: 'DM Sans', sans-serif;
   font-size: .76rem;
@@ -651,7 +737,6 @@ nav {
   text-align: center;
 }
 
-/* Cards stores */
 .sheet-stores {
   display: flex;
   flex-direction: column;
@@ -674,7 +759,6 @@ nav {
   transform: scale(0.98) !important;
 }
 
-/* Amazon */
 .sheet-store-card--amazon {
   background: linear-gradient(135deg, rgba(255, 248, 235, 0.9) 0%, rgba(255, 240, 210, 0.8) 100%);
   border-color: rgba(255, 153, 0, 0.22);
@@ -692,7 +776,6 @@ nav {
   box-shadow: 0 3px 10px rgba(255, 153, 0, 0.32);
 }
 
-/* Leroy Merlin */
 .sheet-store-card--lm {
   background: linear-gradient(135deg, rgba(240, 251, 244, 0.9) 0%, rgba(220, 246, 230, 0.8) 100%);
   border-color: rgba(0, 140, 50, 0.18);
@@ -710,7 +793,6 @@ nav {
   box-shadow: 0 3px 10px rgba(0, 140, 50, 0.3);
 }
 
-/* Logo wrapper commun */
 .sheet-store-logo-wrap {
   width: 46px;
   height: 46px;
@@ -730,7 +812,6 @@ nav {
   display: block;
 }
 
-/* Texte store */
 .sheet-store-info {
   flex: 1;
   display: flex;
@@ -751,7 +832,6 @@ nav {
   color: var(--muted);
 }
 
-/* Flèche */
 .sheet-store-arrow {
   color: rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
@@ -763,7 +843,6 @@ nav {
   transform: translateX(3px);
 }
 
-/* Bouton annuler */
 .sheet-cancel {
   width: 100%;
   padding: 14px;
@@ -792,64 +871,6 @@ nav {
   width: auto;
   display: block;
   object-fit: contain;
-}
-
-/* ══ GUIDE TEASER ══ */
-.diy-guide-section {
-  animation: fadeUp .65s ease .24s both;
-}
-
-.diy-guide-teaser {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 20px 24px;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.07) 0%, rgba(27, 58, 107, 0.04) 100%);
-  border: 1.5px solid rgba(37, 99, 235, 0.2);
-  border-radius: 18px;
-  text-decoration: none;
-  transition: all .22s ease;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 3px 14px rgba(37, 99, 235, 0.07);
-}
-
-.diy-guide-teaser:hover {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.11) 0%, rgba(27, 58, 107, 0.07) 100%);
-  border-color: rgba(37, 99, 235, 0.4);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 6px 24px rgba(37, 99, 235, 0.13);
-  transform: translateY(-1px);
-}
-
-.diy-guide-teaser-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.diy-guide-teaser-hook {
-  font-family: 'Sora', sans-serif;
-  font-size: 1rem;
-  font-weight: 800;
-  color: var(--navy);
-  letter-spacing: -.02em;
-  line-height: 1.2;
-}
-
-.diy-guide-teaser-sub {
-  font-family: 'DM Sans', sans-serif;
-  font-size: .8rem;
-  color: var(--blue);
-  font-weight: 500;
-}
-
-.diy-guide-teaser-arrow {
-  color: var(--blue);
-  flex-shrink: 0;
-  transition: transform .22s ease;
-}
-
-.diy-guide-teaser:hover .diy-guide-teaser-arrow {
-  transform: translateX(5px);
 }
 
 /* ══ FOOTER ══ */
@@ -1062,7 +1083,6 @@ footer a:hover {
 /* ── Mobile ≤ 640px ── */
 @media (max-width: 640px) {
 
-  /* Nav */
   .btn-ghost {
     display: none;
   }
@@ -1080,13 +1100,11 @@ footer a:hover {
     height: 36px;
   }
 
-  /* Layout — padding-top augmenté pour plus d'air sous la nav */
   .diy-main {
     padding: 110px 16px 48px;
     gap: 36px;
   }
 
-  /* Hero */
   .diy-hero {
     gap: 10px;
   }
@@ -1113,6 +1131,34 @@ footer a:hover {
     font-size: .8rem;
   }
 
+  /* Guide card */
+  .diy-guide-card {
+    padding: 22px 18px;
+    gap: 16px;
+    border-radius: 18px;
+  }
+
+  .diy-guide-title {
+    font-size: 1.3rem;
+  }
+
+  .diy-guide-desc {
+    font-size: .82rem;
+  }
+
+  .diy-guide-step-pill {
+    padding: 5px 11px 5px 7px;
+  }
+
+  .diy-guide-step-label {
+    font-size: .74rem;
+  }
+
+  .diy-guide-cta {
+    padding: 13px 20px;
+    font-size: .85rem;
+  }
+
   /* Section produits */
   .diy-section {
     gap: 14px;
@@ -1126,7 +1172,6 @@ footer a:hover {
     font-size: .8rem;
   }
 
-  /* Cards produit */
   .diy-products-grid {
     gap: 7px;
   }
@@ -1163,21 +1208,6 @@ footer a:hover {
   .diy-link-logo {
     height: 16px;
   }
-
-  /* Guide teaser */
-  .diy-guide-teaser {
-    padding: 16px 18px;
-    border-radius: 14px;
-    gap: 12px;
-  }
-
-  .diy-guide-teaser-hook {
-    font-size: .88rem;
-  }
-
-  .diy-guide-teaser-sub {
-    font-size: .74rem;
-  }
 }
 
 /* ── Très petit mobile ≤ 380px ── */
@@ -1189,6 +1219,16 @@ footer a:hover {
 
   .diy-hero-title {
     font-size: 1.7rem;
+  }
+
+  /* Guide card */
+  .diy-guide-card {
+    padding: 18px 14px;
+    gap: 14px;
+  }
+
+  .diy-guide-steps-preview {
+    gap: 5px;
   }
 
   .diy-product-card {
