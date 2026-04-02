@@ -2,16 +2,6 @@ import { useState } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
 import './Achats.css'
 
-const CATEGORY_COLORS = {
-    Plomberie: { bg: '#eff6ff', text: '#2563eb' },
-    Électricité: { bg: '#fefce8', text: '#ca8a04' },
-    Menuiserie: { bg: '#fdf4ff', text: '#9333ea' },
-    Peinture: { bg: '#fff7ed', text: '#ea580c' },
-    Maçonnerie: { bg: '#f0fdf4', text: '#16a34a' },
-    Carrelage: { bg: '#fff1f2', text: '#e11d48' },
-    Chauffage: { bg: '#fff7ed', text: '#c2410c' },
-}
-
 const TRANSACTIONS = [
     {
         id: 'TXN-2025-001',
@@ -19,7 +9,6 @@ const TRANSACTIONS = [
         category: 'Plomberie',
         date: '2025-06-12',
         amount: 4.99,
-        status: 'paid',
     },
     {
         id: 'TXN-2025-002',
@@ -27,7 +16,6 @@ const TRANSACTIONS = [
         category: 'Électricité',
         date: '2025-05-28',
         amount: 5.99,
-        status: 'paid',
     },
     {
         id: 'TXN-2025-003',
@@ -35,7 +23,6 @@ const TRANSACTIONS = [
         category: 'Menuiserie',
         date: '2025-04-14',
         amount: 6.99,
-        status: 'paid',
     },
     {
         id: 'TXN-2025-004',
@@ -43,7 +30,6 @@ const TRANSACTIONS = [
         category: 'Peinture',
         date: '2025-03-02',
         amount: 3.99,
-        status: 'refunded',
     },
     {
         id: 'TXN-2025-005',
@@ -51,7 +37,6 @@ const TRANSACTIONS = [
         category: 'Maçonnerie',
         date: '2025-01-19',
         amount: 4.49,
-        status: 'paid',
     },
 ]
 
@@ -62,10 +47,8 @@ function formatDate(iso) {
 
 export default function Achats() {
     const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
-    const [filter, setFilter] = useState('all')
 
-    const filtered = filter === 'all' ? TRANSACTIONS : TRANSACTIONS.filter(t => t.status === filter)
-    const total = TRANSACTIONS.filter(t => t.status === 'paid').reduce((s, t) => s + t.amount, 0)
+    const total = TRANSACTIONS.reduce((s, t) => s + t.amount, 0)
 
     return (
         <>
@@ -103,9 +86,9 @@ export default function Achats() {
                     </section>
 
                     {/* Stats */}
-                    <section className="ach-stats" style={{ animationDelay: '.08s' }}>
+                    <section className="ach-stats">
                         <div className="ach-stat-card">
-                            <span className="ach-stat-value">{TRANSACTIONS.filter(t => t.status === 'paid').length}</span>
+                            <span className="ach-stat-value">{TRANSACTIONS.length}</span>
                             <span className="ach-stat-label">Guides achetés</span>
                         </div>
                         <div className="ach-stat-divider" />
@@ -113,29 +96,14 @@ export default function Achats() {
                             <span className="ach-stat-value">{total.toFixed(2).replace('.', ',')} €</span>
                             <span className="ach-stat-label">Total dépensé</span>
                         </div>
-                        <div className="ach-stat-divider" />
-                        <div className="ach-stat-card">
-                            <span className="ach-stat-value">{TRANSACTIONS.filter(t => t.status === 'refunded').length}</span>
-                            <span className="ach-stat-label">Remboursé(s)</span>
-                        </div>
                     </section>
 
-                    {/* Filtres */}
-                    <div className="ach-filters" style={{ animationDelay: '.12s' }}>
-                        {[['all', 'Tous'], ['paid', 'Payés'], ['refunded', 'Remboursés']].map(([val, label]) => (
-                            <button
-                                key={val}
-                                className={`ach-filter-btn${filter === val ? ' ach-filter-btn--active' : ''}`}
-                                onClick={() => setFilter(val)}
-                            >
-                                {label}
-                            </button>
-                        ))}
-                    </div>
+                    {/* Label section */}
+                    <p className="ach-section-label">Transactions</p>
 
                     {/* Liste */}
-                    <section className="ach-list" style={{ animationDelay: '.16s' }}>
-                        {filtered.length === 0 ? (
+                    <section className="ach-list">
+                        {TRANSACTIONS.length === 0 ? (
                             <div className="ach-empty">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="36" height="36">
                                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -144,30 +112,21 @@ export default function Achats() {
                                 </svg>
                                 <p>Aucune transaction</p>
                             </div>
-                        ) : filtered.map((t, i) => {
-                            const cat = CATEGORY_COLORS[t.category] || { bg: '#f5f5f5', text: '#555' }
-                            return (
-                                <a key={t.id} href={`/guide/${t.id}`} className="ach-item" style={{ animationDelay: `${.16 + i * .06}s` }}>
-                                    <div className="ach-item-left">
-                                        <span className="ach-cat-badge" style={{ background: cat.bg, color: cat.text }}>
-                                            {t.category}
-                                        </span>
+                        ) : TRANSACTIONS.map((t) => (
+                            <div key={t.id} className="ach-item">
+                                <div className="ach-item-left">
+                                    <span className="ach-item-title">{t.guide}</span>
+                                    <div className="ach-item-meta">
                                         <span className="ach-item-date">{formatDate(t.date)}</span>
-                                        <span className="ach-item-title">{t.guide}</span>
-                                        <span className="ach-item-id">{t.id}</span>
+                                        <span className="ach-item-dot" />
+                                        <span className="ach-item-category">{t.category}</span>
                                     </div>
-                                    <div className="ach-item-right">
-                                        <span className="ach-item-amount">{t.amount.toFixed(2).replace('.', ',')} €</span>
-                                        <span className={`ach-item-status ach-item-status--${t.status}`}>
-                                            {t.status === 'paid' ? 'Payé' : 'Remboursé'}
-                                        </span>
-                                        <svg className="ach-item-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                                            <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    </div>
-                                </a>
-                            )
-                        })}
+                                </div>
+                                <div className="ach-item-right">
+                                    <span className="ach-item-amount">{t.amount.toFixed(2).replace('.', ',')} €</span>
+                                </div>
+                            </div>
+                        ))}
                     </section>
                 </main>
 
