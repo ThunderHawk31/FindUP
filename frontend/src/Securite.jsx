@@ -91,6 +91,7 @@ export default function Securite() {
     const [errors, setErrors] = useState({})
     const [loading, setLoading] = useState(false)
     const [saved, setSaved] = useState(false)
+    const [confirmDelete, setConfirmDelete] = useState(false)
 
     const setField = field => val => {
         setForm(f => ({ ...f, [field]: val }))
@@ -212,11 +213,6 @@ export default function Securite() {
                                         <><span className="sec-spinner" />Mise à jour…</>
                                     ) : (
                                         <>
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="15" height="15">
-                                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                                                <polyline points="17 21 17 13 7 13 7 21" />
-                                                <polyline points="7 3 7 8 15 8" />
-                                            </svg>
                                             Mettre à jour
                                         </>
                                     )}
@@ -225,51 +221,54 @@ export default function Securite() {
                         </form>
                     </section>
 
-                    {/* Infos sécurité */}
-                    <section className="sec-card sec-card--info">
-                        <div className="sec-card-header">
-                            <div className="sec-card-icon sec-card-icon--gold">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="20" height="20">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <div className="sec-card-title">Sécurité du compte</div>
-                                <div className="sec-card-desc">État de votre protection</div>
-                            </div>
-                        </div>
-                        <div className="sec-info-list">
-                            <div className="sec-info-item">
-                                <span className="sec-info-dot sec-info-dot--ok" />
-                                <span className="sec-info-text">Email vérifié</span>
-                                <span className="sec-info-badge sec-info-badge--ok">Actif</span>
-                            </div>
-                            <div className="sec-info-item">
-                                <span className="sec-info-dot sec-info-dot--warn" />
-                                <span className="sec-info-text">Double authentification</span>
-                                <span className="sec-info-badge sec-info-badge--warn">Bientôt</span>
-                            </div>
-                            <div className="sec-info-item">
-                                <span className="sec-info-dot sec-info-dot--ok" />
-                                <span className="sec-info-text">Dernière connexion</span>
-                                <span className="sec-info-time">Aujourd'hui, 09:34</span>
-                            </div>
-                        </div>
-                    </section>
-
                     {/* Zone danger */}
                     <section className="sec-card sec-card--danger">
-                        <div className="sec-danger-header">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
-                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                                <line x1="12" y1="9" x2="12" y2="13" />
-                                <line x1="12" y1="17" x2="12.01" y2="17" />
-                            </svg>
-                            Zone de danger
+                        <div className="sec-danger-content">
+                            <div className="sec-danger-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" width="22" height="22">
+                                    <polyline points="3 6 5 6 21 6" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" strokeLinecap="round" strokeLinejoin="round" />
+                                    <path d="M10 11v6M14 11v6" strokeLinecap="round" />
+                                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </div>
+                            <div className="sec-danger-text">
+                                <span className="sec-danger-title">Supprimer le compte</span>
+                                <span className="sec-danger-desc">Action irréversible — toutes vos données seront effacées</span>
+                            </div>
                         </div>
-                        <button className="sec-delete-btn">
-                            Supprimer mon compte
-                        </button>
+
+                        {!confirmDelete ? (
+                            <button
+                                className="sec-delete-btn"
+                                onClick={() => setConfirmDelete(true)}
+                            >
+                                Continuer
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="13" height="13">
+                                    <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                            </button>
+                        ) : (
+                            <div className="sec-danger-confirm">
+                                <p className="sec-danger-confirm-text">
+                                    Êtes-vous sûr ? Cette action est définitive.
+                                </p>
+                                <div className="sec-danger-confirm-actions">
+                                    <button
+                                        className="sec-delete-btn sec-delete-btn--confirm"
+                                        onClick={() => { /* TODO: appel API */ }}
+                                    >
+                                        Oui, supprimer
+                                    </button>
+                                    <button
+                                        className="sec-delete-btn sec-delete-btn--cancel"
+                                        onClick={() => setConfirmDelete(false)}
+                                    >
+                                        Annuler
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </section>
                 </main>
 
