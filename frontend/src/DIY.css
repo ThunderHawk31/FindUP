@@ -37,7 +37,7 @@ body {
   min-height: 100vh;
 }
 
-/* ORBS */
+/* ══ ORBS ══ */
 .bg-orbs {
   position: fixed;
   inset: 0;
@@ -209,7 +209,7 @@ nav {
   fill: rgba(255, 255, 255, .9);
 }
 
-/* HIGHLIGHT */
+/* ══ HIGHLIGHT ══ */
 .highlight {
   background: linear-gradient(135deg, var(--blue) 0%, #1a4fc4 45%, var(--gold) 100%);
   -webkit-background-clip: text;
@@ -299,8 +299,8 @@ nav {
 .diy-guide-card {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 28px 26px;
+  gap: 0;
+  padding: 32px 28px;
   background: linear-gradient(145deg,
       rgba(255, 255, 255, 0.82) 0%,
       rgba(235, 243, 255, 0.72) 100%);
@@ -321,33 +321,12 @@ nav {
     0 8px 36px rgba(37, 99, 235, 0.14);
 }
 
-/* Badge */
-.diy-guide-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  align-self: flex-start;
-  padding: 5px 12px;
-  border-radius: 50px;
-  background: rgba(37, 99, 235, 0.09);
-  border: 1px solid rgba(37, 99, 235, 0.18);
-  font-family: 'DM Sans', sans-serif;
-  font-size: .72rem;
-  font-weight: 600;
-  color: var(--blue);
-  letter-spacing: .01em;
-}
-
-.diy-guide-badge svg {
-  flex-shrink: 0;
-  color: var(--blue);
-}
-
 /* Titre + desc */
 .diy-guide-content {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-bottom: 24px;
 }
 
 .diy-guide-title {
@@ -360,7 +339,6 @@ nav {
 }
 
 .diy-guide-desc {
-  font-family: 'DM Sans', sans-serif;
   font-size: .87rem;
   color: var(--muted);
   line-height: 1.65;
@@ -368,11 +346,19 @@ nav {
   max-width: 440px;
 }
 
+/* Divider */
+.diy-guide-divider {
+  height: 1px;
+  background: rgba(37, 99, 235, 0.1);
+  margin-bottom: 20px;
+}
+
 /* Steps preview */
 .diy-guide-steps-preview {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
+  margin-bottom: 28px;
 }
 
 .diy-guide-step-pill {
@@ -409,7 +395,6 @@ nav {
 }
 
 .diy-guide-step-label {
-  font-family: 'DM Sans', sans-serif;
   font-size: .78rem;
   font-weight: 500;
   color: var(--navy);
@@ -421,38 +406,50 @@ nav {
   font-size: .75rem;
 }
 
-/* CTA */
+/* ── CTA ── */
+.diy-guide-cta-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
 .diy-guide-cta {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 9px;
-  padding: 14px 24px;
+  gap: 8px;
+  padding: 11px 22px;
   background: var(--navy);
   color: white;
   font-family: 'Sora', sans-serif;
-  font-size: .9rem;
+  font-size: .88rem;
   font-weight: 700;
   border-radius: 50px;
   text-decoration: none;
   letter-spacing: -.01em;
-  box-shadow:
-    0 2px 12px rgba(7, 16, 31, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  transition: all .2s ease;
+  box-shadow: 0 2px 12px rgba(7, 16, 31, 0.22);
+  transition: background .2s ease, box-shadow .2s ease, gap .2s ease, transform .15s ease;
   -webkit-tap-highlight-color: transparent;
-  align-self: stretch;
+  white-space: nowrap;
 }
 
 .diy-guide-cta:hover {
-  background: #1B3A6B;
-  box-shadow: 0 5px 22px rgba(7, 16, 31, 0.28);
-  transform: translateY(-1px);
+  background: var(--navy-mid);
   gap: 12px;
+  box-shadow: 0 4px 20px rgba(7, 16, 31, 0.28);
+  transform: translateY(-1px);
 }
 
 .diy-guide-cta:active {
-  transform: scale(0.985);
+  transform: scale(0.975);
+  box-shadow: 0 1px 6px rgba(7, 16, 31, 0.18);
+}
+
+.diy-guide-cta-hint {
+  font-size: .72rem;
+  color: var(--muted);
+  opacity: .75;
+  letter-spacing: .01em;
 }
 
 /* ══ SECTION PRODUITS ══ */
@@ -478,7 +475,6 @@ nav {
 }
 
 .diy-section-sub {
-  font-family: 'DM Sans', sans-serif;
   font-size: .88rem;
   color: var(--muted);
 }
@@ -515,7 +511,6 @@ nav {
 
 .diy-product-row {
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 14px;
 }
@@ -546,7 +541,6 @@ nav {
   object-fit: contain;
   object-position: center;
   padding: 8px;
-  display: block;
 }
 
 .diy-product-img-placeholder {
@@ -573,7 +567,6 @@ nav {
 }
 
 .diy-product-detail {
-  font-family: 'DM Sans', sans-serif;
   font-size: .74rem;
   color: var(--muted);
   line-height: 1.35;
@@ -599,7 +592,7 @@ nav {
   transform: translateX(2px);
 }
 
-/* ══ BOTTOM SHEET iOS ══ */
+/* ══ BOTTOM SHEET ══ */
 @keyframes sheetRise {
   from {
     transform: translateY(100%);
@@ -716,7 +709,6 @@ nav {
 }
 
 .sheet-product-detail {
-  font-family: 'DM Sans', sans-serif;
   font-size: .71rem;
   color: var(--muted);
 }
@@ -730,10 +722,8 @@ nav {
 }
 
 .sheet-label {
-  font-family: 'DM Sans', sans-serif;
   font-size: .76rem;
   color: var(--muted);
-  font-weight: 400;
   text-align: center;
 }
 
@@ -771,11 +761,6 @@ nav {
   transform: translateY(-1px);
 }
 
-.sheet-store-logo-wrap--amazon {
-  background: linear-gradient(145deg, #ff9900, #e68800);
-  box-shadow: 0 3px 10px rgba(255, 153, 0, 0.32);
-}
-
 .sheet-store-card--lm {
   background: linear-gradient(135deg, rgba(240, 251, 244, 0.9) 0%, rgba(220, 246, 230, 0.8) 100%);
   border-color: rgba(0, 140, 50, 0.18);
@@ -788,11 +773,6 @@ nav {
   transform: translateY(-1px);
 }
 
-.sheet-store-logo-wrap--lm {
-  background: linear-gradient(145deg, #009c38, #007a2c);
-  box-shadow: 0 3px 10px rgba(0, 140, 50, 0.3);
-}
-
 .sheet-store-logo-wrap {
   width: 46px;
   height: 46px;
@@ -801,6 +781,16 @@ nav {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.sheet-store-logo-wrap--amazon {
+  background: linear-gradient(145deg, #ff9900, #e68800);
+  box-shadow: 0 3px 10px rgba(255, 153, 0, 0.32);
+}
+
+.sheet-store-logo-wrap--lm {
+  background: linear-gradient(145deg, #009c38, #007a2c);
+  box-shadow: 0 3px 10px rgba(0, 140, 50, 0.3);
 }
 
 .sheet-store-logo {
@@ -827,7 +817,6 @@ nav {
 }
 
 .sheet-store-hint {
-  font-family: 'DM Sans', sans-serif;
   font-size: .73rem;
   color: var(--muted);
 }
@@ -864,13 +853,6 @@ nav {
 
 .sheet-cancel:active {
   transform: scale(0.99);
-}
-
-.diy-link-logo {
-  height: 13px;
-  width: auto;
-  display: block;
-  object-fit: contain;
 }
 
 /* ══ FOOTER ══ */
@@ -1059,11 +1041,7 @@ footer a:hover {
   height: 18px;
 }
 
-/* ══════════════════════════════════════════════
-   RESPONSIVE
-   ══════════════════════════════════════════════ */
-
-/* ── Tablette 641–1100px ── */
+/* ══ RESPONSIVE ══ */
 @media (min-width: 641px) and (max-width: 1100px) {
   nav {
     padding: 12px 24px;
@@ -1080,9 +1058,7 @@ footer a:hover {
   }
 }
 
-/* ── Mobile ≤ 640px ── */
 @media (max-width: 640px) {
-
   .btn-ghost {
     display: none;
   }
@@ -1119,23 +1095,13 @@ footer a:hover {
     line-height: 1.6;
   }
 
-  .diy-fallback-row {
-    margin-top: 2px;
-  }
-
-  .diy-fallback-text {
-    font-size: .8rem;
-  }
-
-  .diy-fallback-link {
-    font-size: .8rem;
-  }
-
-  /* Guide card */
   .diy-guide-card {
-    padding: 22px 18px;
-    gap: 16px;
+    padding: 24px 18px;
     border-radius: 18px;
+  }
+
+  .diy-guide-content {
+    margin-bottom: 18px;
   }
 
   .diy-guide-title {
@@ -1146,6 +1112,10 @@ footer a:hover {
     font-size: .82rem;
   }
 
+  .diy-guide-steps-preview {
+    margin-bottom: 22px;
+  }
+
   .diy-guide-step-pill {
     padding: 5px 11px 5px 7px;
   }
@@ -1154,12 +1124,22 @@ footer a:hover {
     font-size: .74rem;
   }
 
-  .diy-guide-cta {
-    padding: 13px 20px;
-    font-size: .85rem;
+  .diy-guide-cta-wrap {
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 
-  /* Section produits */
+  .diy-guide-cta {
+    font-size: .86rem;
+    padding: 11px 20px;
+  }
+
+  .diy-guide-cta-hint {
+    font-size: .69rem;
+  }
+
   .diy-section {
     gap: 14px;
   }
@@ -1178,7 +1158,6 @@ footer a:hover {
 
   .diy-product-card {
     padding: 12px 14px;
-    gap: 11px;
     border-radius: 14px;
   }
 
@@ -1200,17 +1179,8 @@ footer a:hover {
   .diy-product-price {
     font-size: .88rem;
   }
-
-  .diy-link-btn {
-    padding: 6px 10px;
-  }
-
-  .diy-link-logo {
-    height: 16px;
-  }
 }
 
-/* ── Très petit mobile ≤ 380px ── */
 @media (max-width: 380px) {
   .diy-main {
     padding: 100px 12px 40px;
@@ -1221,10 +1191,8 @@ footer a:hover {
     font-size: 1.7rem;
   }
 
-  /* Guide card */
   .diy-guide-card {
     padding: 18px 14px;
-    gap: 14px;
   }
 
   .diy-guide-steps-preview {
@@ -1232,7 +1200,6 @@ footer a:hover {
   }
 
   .diy-product-card {
-    gap: 9px;
     padding: 11px 12px;
   }
 
@@ -1247,9 +1214,5 @@ footer a:hover {
 
   .diy-product-price {
     font-size: .82rem;
-  }
-
-  .diy-link-logo {
-    height: 14px;
   }
 }

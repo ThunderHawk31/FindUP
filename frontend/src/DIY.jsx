@@ -54,7 +54,6 @@ function StoreSheet({ product, onClose }) {
       <div className="sheet-backdrop" onClick={onClose} />
       <div className="sheet-container">
         <div className="sheet-handle" />
-
         <div className="sheet-product-row">
           <div className="sheet-product-img">
             {product.img
@@ -72,21 +71,6 @@ function StoreSheet({ product, onClose }) {
         <p className="sheet-label">Choisissez où acheter</p>
 
         <div className="sheet-stores">
-          <a href={product.amazon} target="_blank" rel="noopener noreferrer" className="sheet-store-card sheet-store-card--amazon">
-            <div className="sheet-store-logo-wrap sheet-store-logo-wrap--amazon">
-              <img src="/Amazon.png" alt="Amazon" className="sheet-store-logo" />
-            </div>
-            <div className="sheet-store-info">
-              <span className="sheet-store-name">Amazon</span>
-              <span className="sheet-store-hint">Livraison rapide · Prime éligible</span>
-            </div>
-            <div className="sheet-store-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="14" height="14">
-                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-          </a>
-
           <a href={product.lm} target="_blank" rel="noopener noreferrer" className="sheet-store-card sheet-store-card--lm">
             <div className="sheet-store-logo-wrap sheet-store-logo-wrap--lm">
               <img src="/Leroy-Merlin.png" alt="Leroy Merlin" className="sheet-store-logo" />
@@ -142,7 +126,6 @@ function ProductCard({ product, index, onSelect }) {
 export default function DIY() {
   const params = new URLSearchParams(window.location.search)
   const catKey = params.get('cat') || 'plomberie'
-  const q = params.get('q') || ''
   const category = CATEGORIES[catKey] || CATEGORIES.plomberie
   const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
   const [profileOpen, setProfileOpen] = useState(false)
@@ -197,7 +180,6 @@ export default function DIY() {
           <section className="diy-guide-section">
             <div className="diy-guide-card">
 
-              {/* Titre + description */}
               <div className="diy-guide-content">
                 <h2 className="diy-guide-title">
                   Réparez sans risque<br />
@@ -205,11 +187,12 @@ export default function DIY() {
                 </h2>
                 <p className="diy-guide-desc">
                   Notre IA génère un guide illustré spécifiquement pour votre problème —
-                  outils nécessaires, durée estimée, points de vigilance.
+                  outils nécessaires, points de vigilance.
                 </p>
               </div>
 
-              {/* Steps preview */}
+              <div className="diy-guide-divider" />
+
               <div className="diy-guide-steps-preview">
                 {[
                   { n: '1', label: 'Diagnostic du problème' },
@@ -226,13 +209,14 @@ export default function DIY() {
                 </div>
               </div>
 
-              {/* CTA */}
-              <a href="/guide" className="diy-guide-cta">
-                Générer mon guide
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="15" height="15">
-                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
+              <div className="diy-guide-cta-wrap">
+                <a href="/guide" className="diy-guide-cta">
+                  Générer mon guide
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="14" height="14">
+                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+              </div>
 
             </div>
           </section>
