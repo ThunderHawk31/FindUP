@@ -50,7 +50,7 @@ export default function App() {
     }
   }
 
-  const chips = ["Fuite d'eau", "Panne électrique", "Carrelage fissuré", "Porte qui grince", "Chauffage"]
+  const chips = ["Fuite d'eau", "Panne électrique", "Carrelage fissuré", "Porte qui grince"]
 
   return (
     <>
