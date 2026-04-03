@@ -6,31 +6,31 @@ import './Results.css'
 const ARTISANS = [
   {
     id: 1, name: 'Jean Dubois', metier: 'Plombier', note: 4.9, avis: 127, ville: 'Nantes', adresse: '12 rue Crébillon, Nantes', tel: '06 12 34 56 78', site: 'https://jean-dubois-plombier.fr', certifie: true, lat: 47.2135, lng: -1.5596, initiales: 'JD', couleur: '#2563EB',
-    photos: ['https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300', 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=300', 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=300']
+    photos: ['https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600', 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600', 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=600']
   },
   {
     id: 2, name: 'Marie Lecomte', metier: 'Électricienne', note: 4.8, avis: 89, ville: 'Saint-Herblain', adresse: '34 rue du Calvaire, Saint-Herblain', tel: '06 23 45 67 89', site: null, certifie: true, lat: 47.2180, lng: -1.5530, initiales: 'ML', couleur: '#1B3A6B',
-    photos: ['https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=300', 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300', 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=300']
+    photos: ['https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600', 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600', 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=600']
   },
   {
     id: 3, name: 'Pierre Renard', metier: 'Carreleur', note: 4.7, avis: 64, ville: 'Rezé', adresse: '8 rue de Strasbourg, Rezé', tel: '06 34 56 78 90', site: 'https://renard-carrelage.fr', certifie: false, lat: 47.2160, lng: -1.5480, initiales: 'PR', couleur: '#D4A853',
-    photos: ['https://images.unsplash.com/photo-1558618047-f4e80a89bf44?w=300', 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300', 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=300']
+    photos: ['https://images.unsplash.com/photo-1558618047-f4e80a89bf44?w=600', 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600', 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600']
   },
   {
     id: 4, name: 'Thomas Martin', metier: 'Plombier', note: 4.6, avis: 203, ville: 'Nantes', adresse: '56 bd Victor Hugo, Nantes', tel: '06 45 67 89 01', site: null, certifie: true, lat: 47.2100, lng: -1.5620, initiales: 'TM', couleur: '#2563EB',
-    photos: ['https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=300', 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300', 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=300']
+    photos: ['https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=600', 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600', 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600']
   },
   {
     id: 5, name: 'Sophie Bernard', metier: 'Chauffagiste', note: 4.9, avis: 41, ville: 'Orvault', adresse: '3 rue Boileau, Orvault', tel: '06 56 78 90 12', site: 'https://bernard-chauffage.com', certifie: true, lat: 47.2200, lng: -1.5700, initiales: 'SB', couleur: '#1B3A6B',
-    photos: ['https://images.unsplash.com/photo-1513467535987-fd81bc7d62f8?w=300', 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300', 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=300']
+    photos: ['https://images.unsplash.com/photo-1513467535987-fd81bc7d62f8?w=600', 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600', 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600']
   },
   {
     id: 6, name: 'Lucas Moreau', metier: 'Menuisier', note: 4.5, avis: 58, ville: 'Nantes', adresse: '18 rue de la Paix, Nantes', tel: '06 67 89 01 23', site: null, certifie: false, lat: 47.2080, lng: -1.5550, initiales: 'LM', couleur: '#2563EB',
-    photos: ['https://images.unsplash.com/photo-1504148455328-c376907d081c?w=300', 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=300', 'https://images.unsplash.com/photo-1558618047-f4e80a89bf44?w=300']
+    photos: ['https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600', 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600', 'https://images.unsplash.com/photo-1558618047-f4e80a89bf44?w=600']
   },
   {
     id: 7, name: 'Claire Dupont', metier: 'Peintre', note: 4.8, avis: 112, ville: 'Carquefou', adresse: '27 rue Voltaire, Carquefou', tel: '06 78 90 12 34', site: 'https://dupont-peinture.fr', certifie: true, lat: 47.2230, lng: -1.5460, initiales: 'CD', couleur: '#D4A853',
-    photos: ['https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=300', 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=300', 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=300']
+    photos: ['https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=600', 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600', 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600']
   },
 ]
 
@@ -237,40 +237,77 @@ function ArtisanCard({ artisan, selected, onClick }) {
   )
 }
 
+/* ── PHOTO CAROUSEL ── */
+function PhotoCarousel({ photos }) {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const trackRef = useRef(null)
+
+  function handleScroll() {
+    const track = trackRef.current
+    if (!track) return
+    const index = Math.round(track.scrollLeft / track.clientWidth)
+    setActiveIndex(index)
+  }
+
+  function scrollTo(index) {
+    const track = trackRef.current
+    if (!track) return
+    track.scrollTo({ left: index * track.clientWidth, behavior: 'smooth' })
+    setActiveIndex(index)
+  }
+
+  if (!photos || photos.length === 0) return null
+
+  return (
+    <div className="photo-carousel">
+      <div className="photo-carousel-track" ref={trackRef} onScroll={handleScroll}>
+        {photos.map((url, i) => (
+          <div key={i} className="photo-carousel-slide">
+            <img src={url} alt="" className="photo-carousel-img" />
+          </div>
+        ))}
+      </div>
+      <div className="photo-carousel-footer">
+        <span className="photo-carousel-counter">{activeIndex + 1} / {photos.length}</span>
+        <div className="photo-carousel-dots">
+          {photos.map((_, i) => (
+            <button
+              key={i}
+              className={`photo-carousel-dot ${i === activeIndex ? 'photo-carousel-dot--active' : ''}`}
+              onClick={() => scrollTo(i)}
+            />
+          ))}
+        </div>
+        <div className="photo-carousel-arrows">
+          <button
+            className={`photo-carousel-arrow ${activeIndex === 0 ? 'photo-carousel-arrow--disabled' : ''}`}
+            onClick={() => scrollTo(activeIndex - 1)}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <button
+            className={`photo-carousel-arrow ${activeIndex === photos.length - 1 ? 'photo-carousel-arrow--disabled' : ''}`}
+            onClick={() => scrollTo(activeIndex + 1)}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ── ARTISAN DETAIL ── */
 function ArtisanDetail({ artisan, onClose }) {
-  const [zoomedIndex, setZoomedIndex] = useState(null)
   if (!artisan) return null
   const photos = artisan.photos || []
 
   return (
-    <div className="detail-overlay" onClick={() => { if (zoomedIndex !== null) setZoomedIndex(null); else onClose() }}>
-      {zoomedIndex !== null && (
-        <div className="photo-zoom" onClick={e => e.stopPropagation()}>
-          <div className="photo-zoom-topbar">
-            <span className="photo-zoom-counter">{zoomedIndex + 1} / {photos.length}</span>
-            <button className="photo-zoom-close" onClick={() => setZoomedIndex(null)}>✕</button>
-          </div>
-          <img src={photos[zoomedIndex]} alt="" className="photo-zoom-img" />
-          <div className="photo-zoom-nav-row">
-            <button
-              className={`photo-zoom-nav-btn ${zoomedIndex === 0 ? 'photo-zoom-nav-btn--disabled' : ''}`}
-              onClick={e => { e.stopPropagation(); if (zoomedIndex > 0) setZoomedIndex(i => i - 1) }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </button>
-            <div className="photo-zoom-dots">
-              {photos.map((_, i) => <div key={i} className={`photo-zoom-dot ${i === zoomedIndex ? 'photo-zoom-dot--active' : ''}`} onClick={e => { e.stopPropagation(); setZoomedIndex(i) }} />)}
-            </div>
-            <button
-              className={`photo-zoom-nav-btn ${zoomedIndex === photos.length - 1 ? 'photo-zoom-nav-btn--disabled' : ''}`}
-              onClick={e => { e.stopPropagation(); if (zoomedIndex < photos.length - 1) setZoomedIndex(i => i + 1) }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </button>
-          </div>
-        </div>
-      )}
+    <div className="detail-overlay" onClick={onClose}>
       <div className="detail-card" onClick={e => e.stopPropagation()}>
         <button className="detail-close" onClick={onClose}>✕</button>
         <div className="detail-header">
@@ -286,7 +323,9 @@ function ArtisanDetail({ artisan, onClose }) {
             </div>
           </div>
         </div>
-        {photos.length > 0 && <div className="detail-photos">{photos.map((url, i) => <img key={i} src={url} alt="" className="detail-photo" onClick={e => { e.stopPropagation(); setZoomedIndex(i) }} />)}</div>}
+
+        {photos.length > 0 && <PhotoCarousel photos={photos} />}
+
         <div className="detail-body">
           <div className="detail-row">
             <span className="detail-row-left">
@@ -411,7 +450,6 @@ export default function Results() {
       <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
       <div ref={mapRef} className="results-map" />
 
-      {/* HEADER */}
       <header className="results-header">
         <div className="results-header-inner">
           <div className="results-header-left">
@@ -432,12 +470,10 @@ export default function Results() {
         </div>
       </header>
 
-      {/* PROMO MOBILE */}
       <div className="promo-mobile-strip">
         {PROMOS.map(p => <PromoCardMobile key={p.id} promo={p} onInfo={setActivePromo} />)}
       </div>
 
-      {/* PROMO DESKTOP */}
       <div className="promo-desktop-wrap">
         <GlassSurface width="100%" height={70} borderRadius={18} backgroundOpacity={0.21} blur={14} brightness={55} distortionScale={-60} className="promo-glass">
           <div className="promo-inner">
@@ -446,7 +482,6 @@ export default function Results() {
         </GlassSurface>
       </div>
 
-      {/* LISTE DESKTOP */}
       <aside className="results-list">
         <div className="results-list-header">
           <h2 className="results-count">7 artisans trouvés</h2>
@@ -457,7 +492,6 @@ export default function Results() {
         </div>
       </aside>
 
-      {/* DRAWER MOBILE */}
       <MobileDrawer>
         {ARTISANS.map(a => <ArtisanCard key={a.id} artisan={a} selected={selected === a.id} onClick={() => handleCardClick(a)} />)}
       </MobileDrawer>
