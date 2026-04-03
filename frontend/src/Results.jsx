@@ -5,31 +5,31 @@ import './Results.css'
 
 const ARTISANS = [
   {
-    id: 1, name: 'Jean Dubois', metier: 'Plombier', note: 4.9, avis: 127, ville: 'Nantes', adresse: '12 rue Crébillon, Nantes', tel: '06 12 34 56 78', mail: 'jean.dubois@gmail.com', site: 'https://jean-dubois-plombier.fr', certifie: true, lat: 47.2135, lng: -1.5596, initiales: 'JD', couleur: '#2563EB',
+    id: 1, name: 'Jean Dubois', metier: 'Plombier', note: 4.9, avis: 127, ville: 'Nantes', adresse: '12 rue Crébillon, Nantes', tel: '06 12 34 56 78', site: 'https://jean-dubois-plombier.fr', certifie: true, lat: 47.2135, lng: -1.5596, initiales: 'JD', couleur: '#2563EB',
     photos: ['https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300', 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=300', 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=300']
   },
   {
-    id: 2, name: 'Marie Lecomte', metier: 'Électricienne', note: 4.8, avis: 89, ville: 'Saint-Herblain', adresse: '34 rue du Calvaire, Saint-Herblain', tel: '06 23 45 67 89', mail: 'marie.lecomte@orange.fr', site: null, certifie: true, lat: 47.2180, lng: -1.5530, initiales: 'ML', couleur: '#1B3A6B',
+    id: 2, name: 'Marie Lecomte', metier: 'Électricienne', note: 4.8, avis: 89, ville: 'Saint-Herblain', adresse: '34 rue du Calvaire, Saint-Herblain', tel: '06 23 45 67 89', site: null, certifie: true, lat: 47.2180, lng: -1.5530, initiales: 'ML', couleur: '#1B3A6B',
     photos: ['https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=300', 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300', 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=300']
   },
   {
-    id: 3, name: 'Pierre Renard', metier: 'Carreleur', note: 4.7, avis: 64, ville: 'Rezé', adresse: '8 rue de Strasbourg, Rezé', tel: '06 34 56 78 90', mail: 'pierre.renard@pro.fr', site: 'https://renard-carrelage.fr', certifie: false, lat: 47.2160, lng: -1.5480, initiales: 'PR', couleur: '#D4A853',
+    id: 3, name: 'Pierre Renard', metier: 'Carreleur', note: 4.7, avis: 64, ville: 'Rezé', adresse: '8 rue de Strasbourg, Rezé', tel: '06 34 56 78 90', site: 'https://renard-carrelage.fr', certifie: false, lat: 47.2160, lng: -1.5480, initiales: 'PR', couleur: '#D4A853',
     photos: ['https://images.unsplash.com/photo-1558618047-f4e80a89bf44?w=300', 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300', 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=300']
   },
   {
-    id: 4, name: 'Thomas Martin', metier: 'Plombier', note: 4.6, avis: 203, ville: 'Nantes', adresse: '56 bd Victor Hugo, Nantes', tel: '06 45 67 89 01', mail: 'thomas.martin@plomberie.fr', site: null, certifie: true, lat: 47.2100, lng: -1.5620, initiales: 'TM', couleur: '#2563EB',
+    id: 4, name: 'Thomas Martin', metier: 'Plombier', note: 4.6, avis: 203, ville: 'Nantes', adresse: '56 bd Victor Hugo, Nantes', tel: '06 45 67 89 01', site: null, certifie: true, lat: 47.2100, lng: -1.5620, initiales: 'TM', couleur: '#2563EB',
     photos: ['https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?w=300', 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300', 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=300']
   },
   {
-    id: 5, name: 'Sophie Bernard', metier: 'Chauffagiste', note: 4.9, avis: 41, ville: 'Orvault', adresse: '3 rue Boileau, Orvault', tel: '06 56 78 90 12', mail: 'sophie.bernard@chauffage.fr', site: 'https://bernard-chauffage.com', certifie: true, lat: 47.2200, lng: -1.5700, initiales: 'SB', couleur: '#1B3A6B',
+    id: 5, name: 'Sophie Bernard', metier: 'Chauffagiste', note: 4.9, avis: 41, ville: 'Orvault', adresse: '3 rue Boileau, Orvault', tel: '06 56 78 90 12', site: 'https://bernard-chauffage.com', certifie: true, lat: 47.2200, lng: -1.5700, initiales: 'SB', couleur: '#1B3A6B',
     photos: ['https://images.unsplash.com/photo-1513467535987-fd81bc7d62f8?w=300', 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300', 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=300']
   },
   {
-    id: 6, name: 'Lucas Moreau', metier: 'Menuisier', note: 4.5, avis: 58, ville: 'Nantes', adresse: '18 rue de la Paix, Nantes', tel: '06 67 89 01 23', mail: 'lucas.moreau@menuiserie.fr', site: null, certifie: false, lat: 47.2080, lng: -1.5550, initiales: 'LM', couleur: '#2563EB',
+    id: 6, name: 'Lucas Moreau', metier: 'Menuisier', note: 4.5, avis: 58, ville: 'Nantes', adresse: '18 rue de la Paix, Nantes', tel: '06 67 89 01 23', site: null, certifie: false, lat: 47.2080, lng: -1.5550, initiales: 'LM', couleur: '#2563EB',
     photos: ['https://images.unsplash.com/photo-1504148455328-c376907d081c?w=300', 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=300', 'https://images.unsplash.com/photo-1558618047-f4e80a89bf44?w=300']
   },
   {
-    id: 7, name: 'Claire Dupont', metier: 'Peintre', note: 4.8, avis: 112, ville: 'Carquefou', adresse: '27 rue Voltaire, Carquefou', tel: '06 78 90 12 34', mail: 'claire.dupont@peinture.fr', site: 'https://dupont-peinture.fr', certifie: true, lat: 47.2230, lng: -1.5460, initiales: 'CD', couleur: '#D4A853',
+    id: 7, name: 'Claire Dupont', metier: 'Peintre', note: 4.8, avis: 112, ville: 'Carquefou', adresse: '27 rue Voltaire, Carquefou', tel: '06 78 90 12 34', site: 'https://dupont-peinture.fr', certifie: true, lat: 47.2230, lng: -1.5460, initiales: 'CD', couleur: '#D4A853',
     photos: ['https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=300', 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=300', 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=300']
   },
 ]
@@ -173,7 +173,7 @@ function PromoCard({ promo, onInfo }) {
   )
 }
 
-/* ── PROMO CARD MOBILE — discount + marque + icône ℹ️ uniquement ── */
+/* ── PROMO CARD MOBILE ── */
 function PromoCardMobile({ promo, onInfo }) {
   return (
     <div className="promo-card-mobile" onClick={() => onInfo(promo)}>
@@ -288,10 +288,22 @@ function ArtisanDetail({ artisan, onClose }) {
         </div>
         {photos.length > 0 && <div className="detail-photos">{photos.map((url, i) => <img key={i} src={url} alt="" className="detail-photo" onClick={e => { e.stopPropagation(); setZoomedIndex(i) }} />)}</div>}
         <div className="detail-body">
-          <div className="detail-row"><span className="detail-row-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="detail-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>Lieu</span><span className="detail-value">{artisan.adresse}</span></div>
-          <div className="detail-row"><span className="detail-row-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="detail-icon"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>Email</span><a href={`mailto:${artisan.mail}`} className="detail-tag detail-tag--mail">{artisan.mail}</a></div>
-          <div className="detail-row"><span className="detail-row-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="detail-icon"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>Site web</span>
-            {artisan.site ? <a href={artisan.site} target="_blank" rel="noreferrer" className="detail-tag detail-tag--site">Voir le site →</a> : <a href={`https://www.pagesjaunes.fr/recherche/${encodeURIComponent(artisan.name)}`} target="_blank" rel="noreferrer" className="detail-tag detail-tag--pj">Pages Jaunes →</a>}
+          <div className="detail-row">
+            <span className="detail-row-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="detail-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+              Lieu
+            </span>
+            <span className="detail-value">{artisan.adresse}</span>
+          </div>
+          <div className="detail-row">
+            <span className="detail-row-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="detail-icon"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+              Site web
+            </span>
+            {artisan.site
+              ? <a href={artisan.site} target="_blank" rel="noreferrer" className="detail-tag detail-tag--site">Voir le site →</a>
+              : <a href={`https://www.pagesjaunes.fr/recherche/${encodeURIComponent(artisan.name)}`} target="_blank" rel="noreferrer" className="detail-tag detail-tag--pj">Pages Jaunes →</a>
+            }
           </div>
         </div>
         <button className="detail-btn-call" onClick={() => window.location.href = `tel:${artisan.tel}`}>
@@ -420,12 +432,12 @@ export default function Results() {
         </div>
       </header>
 
-      {/* PROMO MOBILE — 2 cartes côte à côte pleine largeur */}
+      {/* PROMO MOBILE */}
       <div className="promo-mobile-strip">
         {PROMOS.map(p => <PromoCardMobile key={p.id} promo={p} onInfo={setActivePromo} />)}
       </div>
 
-      {/* PROMO DESKTOP — flottante sur la carte */}
+      {/* PROMO DESKTOP */}
       <div className="promo-desktop-wrap">
         <GlassSurface width="100%" height={70} borderRadius={18} backgroundOpacity={0.21} blur={14} brightness={55} distortionScale={-60} className="promo-glass">
           <div className="promo-inner">
