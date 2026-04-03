@@ -1713,3 +1713,152 @@
     padding-right: 32px;
   }
 }
+
+/* ============================================================
+   AJOUT — CTA cards (DIY + Assurance) — à coller à la fin
+   de Results.css, après toutes les règles existantes
+   ============================================================ */
+
+/* ── CTA DESKTOP ── */
+
+/* Surcharge légère de .promo-card pour les CTA */
+.cta-card {
+  text-decoration: none;
+  cursor: pointer;
+  gap: 14px;
+}
+
+/* Icône ronde à gauche */
+.cta-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform .2s;
+}
+
+.cta-card:hover .cta-card-icon {
+  transform: scale(1.1) rotate(-6deg);
+}
+
+.cta-card-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* DIY — accent navy/blue */
+.cta-card--diy .cta-card-icon {
+  background: rgba(37, 99, 235, .1);
+  color: #2563EB;
+}
+
+.cta-card--diy:hover {
+  background: rgba(37, 99, 235, .06);
+  border-color: rgba(37, 99, 235, .18);
+}
+
+/* Assurance — accent gold/orange */
+.cta-card-icon--shield {
+  background: rgba(212, 168, 83, .12);
+  color: var(--gold);
+}
+
+.cta-card--assurance:hover {
+  background: rgba(212, 168, 83, .06);
+  border-color: rgba(212, 168, 83, .22);
+}
+
+/* Flèche → côté droit CTA DIY */
+.cta-card-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(7, 16, 31, .06);
+  color: var(--navy);
+  flex-shrink: 0;
+  transition: all .2s;
+}
+
+.cta-card-arrow svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cta-card--diy:hover .cta-card-arrow {
+  background: rgba(37, 99, 235, .12);
+  color: #2563EB;
+  transform: translateX(2px);
+}
+
+/* Tag "Voir l'offre →" côté droit CTA Assurance */
+.cta-card-tag {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--gold);
+  background: rgba(212, 168, 83, .1);
+  border: 1px solid rgba(212, 168, 83, .28);
+  padding: 5px 11px;
+  border-radius: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all .2s;
+}
+
+.cta-card--assurance:hover .cta-card-tag {
+  background: rgba(212, 168, 83, .18);
+}
+
+/* Séparateur vertical entre les 2 CTA desktop */
+.cta-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(7, 16, 31, .1);
+  flex-shrink: 0;
+}
+
+/* ── CTA MOBILE ── */
+
+.cta-card-mobile {
+  text-decoration: none;
+  gap: 8px;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s;
+}
+
+.cta-card-mobile:active {
+  opacity: .82;
+  transform: scale(.985);
+}
+
+/* Icône mobile */
+.cta-card-mobile-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cta-card-mobile-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.cta-card-mobile--diy .cta-card-mobile-icon {
+  background: rgba(37, 99, 235, .1);
+  color: #2563EB;
+}
+
+.cta-card-mobile-icon--shield {
+  background: rgba(212, 168, 83, .12);
+  color: var(--gold);
+}
