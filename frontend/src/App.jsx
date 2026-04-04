@@ -170,6 +170,21 @@ export default function App() {
           </div>
         </section>
 
+        <section className="artisan-cta">
+          <div className="artisan-cta-inner">
+            <h2 className="artisan-cta-title">Vous êtes artisan&nbsp;?</h2>
+            <p className="artisan-cta-text">
+              Rejoignez findUp et développez votre activité en recevant des demandes de clients qualifiés près de chez vous.
+            </p>
+            <a href="/contact" className="artisan-cta-btn">
+              Nous contacter
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </section>
+
         <div className="app-band">
           <span className="app-band-text">Aussi disponible sur</span>
           <a href="#" className="store-btn">
