@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
 import ProfilePanel from './ProfilePanel'
+import useAuth from './hooks/useAuth'
 import './Historique.css'
 
 const GUIDES = [
@@ -31,7 +32,7 @@ const GUIDES = [
 ]
 
 export default function Historique() {
-  const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
+  const { user, logout } = useAuth()
   const [profileOpen, setProfileOpen] = useState(false)
 
   return (
@@ -42,7 +43,7 @@ export default function Historique() {
         <div className="orb orb-3" />
       </div>
 
-      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
+      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} onLogout={logout} />
 
       <div className="hist-page-layout">
         <nav>

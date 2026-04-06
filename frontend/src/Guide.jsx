@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
 import ProfilePanel from './ProfilePanel'
+import useAuth from './hooks/useAuth'
 import './Guide.css'
 
 const GUIDE_DATA = {
@@ -198,7 +199,7 @@ function StepCard({ step, index, visible }) {
 }
 
 export default function Guide() {
-  const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
+  const { user, logout } = useAuth()
   const [profileOpen, setProfileOpen] = useState(false)
   const [unlocked, setUnlocked] = useState(false)
   const { phase, visibleSteps, generate, retry } = useStreamingGuide()
@@ -210,7 +211,7 @@ export default function Guide() {
       <div className="bg-orbs">
         <div className="orb orb-1" /><div className="orb orb-2" /><div className="orb orb-3" />
       </div>
-      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
+      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} onLogout={logout} />
 
       <div className="guide-page-layout">
         <nav>

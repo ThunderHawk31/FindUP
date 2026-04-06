@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import ProfilePanel from './ProfilePanel'
 import GlassSurface from './components/ui/GlassSurface'
+import useAuth from './hooks/useAuth'
 import './Results.css'
 
 const ARTISANS = [
@@ -304,7 +305,7 @@ function MobileDrawer({ children }) {
 
 /* ── PAGE PRINCIPALE ── */
 export default function Results() {
-  const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
+  const { user, logout } = useAuth()
   const [selected, setSelected] = useState(null)
   const [detail, setDetail] = useState(null)
   const [profileOpen, setProfileOpen] = useState(false)
@@ -349,7 +350,7 @@ export default function Results() {
 
   return (
     <div className="results-page">
-      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
+      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} onLogout={logout} />
       <div ref={mapRef} className="results-map" />
 
       <header className="results-header">

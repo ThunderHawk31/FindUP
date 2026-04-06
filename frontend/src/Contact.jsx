@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
 import ProfilePanel from './ProfilePanel'
+import useAuth from './hooks/useAuth'
 import './Contact.css'
 
 const WEB3FORMS_KEY = '23c8ac38-2ec9-49e7-b550-93d7e814eecb'
@@ -14,7 +15,7 @@ const SUBJECTS = [
 ]
 
 export default function Contact() {
-  const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
+  const { user, logout } = useAuth()
   const [profileOpen, setProfileOpen] = useState(false)
 
   const [subject, setSubject] = useState('')
@@ -81,7 +82,7 @@ export default function Contact() {
         <div className="orb orb-3" />
       </div>
 
-      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
+      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} onLogout={logout} />
 
       <div className="contact-page-layout">
         <nav>
