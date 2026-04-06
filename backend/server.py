@@ -14,6 +14,8 @@ from pathlib import Path
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional
 from datetime import datetime, timezone
+from collections import defaultdict
+import time as time_module
 import anthropic as anthropic_module
 
 ROOT_DIR = Path(__file__).parent
@@ -26,11 +28,53 @@ supabase: Client = None
 ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 anthropic_client = anthropic_module.Anthropic(api_key=ANTHROPIC_API_KEY)
 
+HAIKU_MODEL = "claude-haiku-4-5-20251001"
+SONNET_MODEL = "claude-sonnet-4-6"
+
 app = FastAPI(title="FindUP API", description="Plateforme pour trouver des artisans locaux")
 api_router = APIRouter(prefix="/api")
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+
+# ==================== RATE LIMITER ====================
+
+class RateLimiter:
+    """Rate limiter en mémoire par IP. Thread-safe grâce au GIL Python."""
+
+    def __init__(self, max_requests: int = 10, window_seconds: int = 60):
+        self.max_requests = max_requests
+        self.window_seconds = window_seconds
+        self._requests: dict[str, list[float]] = defaultdict(list)
+
+    def is_allowed(self, key: str) -> bool:
+        """Vérifie si la clé (IP) peut faire une requête."""
+        now = time_module.time()
+        cutoff = now - self.window_seconds
+        self._requests[key] = [t for t in self._requests[key] if t > cutoff]
+        if len(self._requests[key]) >= self.max_requests:
+            return False
+        self._requests[key].append(now)
+        return True
+
+    def remaining(self, key: str) -> int:
+        """Nombre de requêtes restantes pour cette clé."""
+        now = time_module.time()
+        cutoff = now - self.window_seconds
+        self._requests[key] = [t for t in self._requests[key] if t > cutoff]
+        return max(0, self.max_requests - len(self._requests[key]))
+
+    def retry_after(self, key: str) -> int:
+        """Secondes à attendre avant la prochaine requête autorisée."""
+        if not self._requests[key]:
+            return 0
+        oldest = min(self._requests[key])
+        return max(0, int(self.window_seconds - (time_module.time() - oldest)))
+
+
+# Instance globale — 10 requêtes par minute par IP
+chat_rate_limiter = RateLimiter(max_requests=10, window_seconds=60)
 
 
 # ==================== STARTUP ====================
@@ -98,10 +142,18 @@ class AvisResponse(BaseModel):
     auteur: str
     date: str
 
+class ChatHistoryMessage(BaseModel):
+    """Un message dans l'historique de conversation — validé strictement."""
+    role: str = Field(pattern=r"^(user|assistant)$")  # JAMAIS "system"
+    content: str = Field(min_length=1, max_length=5000)
+
+    class Config:
+        extra = "forbid"  # Rejette toute clé non déclarée
+
 class ChatMessage(BaseModel):
-    message: str = Field(max_length=2000)
+    message: str = Field(min_length=1, max_length=2000)
     image_base64: Optional[str] = Field(None, max_length=5_000_000)
-    conversation_history: Optional[List[dict]] = Field(None, max_length=50)
+    conversation_history: Optional[List[ChatHistoryMessage]] = Field(None, max_length=50)
     location: Optional[dict] = None
 
 class FavoriCreate(BaseModel):
@@ -163,6 +215,23 @@ async def require_auth(request: Request) -> dict:
 
 # ==================== AI CHAT ====================
 
+ROUTER_PROMPT = """Analyse ce message utilisateur et l'historique de conversation. Réponds avec UN SEUL MOT parmi : chat, search, guide.
+
+- guide : l'utilisateur veut faire lui-même (mots-clés : "moi-même", "comment faire", "je le fais", "DIY", "guide", "étapes")
+- search : l'utilisateur est prêt à trouver un artisan ET on connaît déjà son problème ET sa localisation
+- chat : tout le reste (qualification du besoin, questions en cours, problème ou localisation manquants)
+
+Réponds uniquement avec le mot, sans ponctuation ni explication."""
+
+GUIDE_PROMPT = """Tu es l'expert DIY de FindUP. Tu aides les particuliers à réaliser eux-mêmes leurs travaux du bâtiment.
+
+FORMAT DE RÉPONSE (JSON STRICT, sans backticks) :
+{"message":"Intro courte et rassurante (1-2 phrases)","suggestions":["Étape courte 1","Étape courte 2","Étape courte 3"]}
+
+- message : accroche bienveillante, maximum 2 phrases
+- suggestions : 3 étapes clés maximum, max 30 caractères chacune
+Réponds UNIQUEMENT avec ce JSON."""
+
 SYSTEM_PROMPT = """Tu es l'assistant FindUP, un expert en travaux du bâtiment français. Tu es chaleureux, rassurant et naturel — comme un ami qui s'y connaît vraiment.
 
 ## TON RÔLE
@@ -204,15 +273,13 @@ Serrurier: Serrure, Blindage, Ouverture, DépannageUrgent
 Vitrier: Vitrage, DoubleVitrage, Miroir, Remplacement"""
 
 
-async def chat_with_ai(session_id: str, message: str, image_base64: Optional[str] = None, chat_history: List[dict] = None) -> dict:
+async def chat_with_ai(session_id: str, message: str, image_base64: Optional[str] = None, chat_history: List[ChatHistoryMessage] = None) -> dict:
     try:
         messages = []
         if chat_history:
             for msg in chat_history:
-                role = msg.get("role", "user")
-                content = msg.get("content", "")
-                if role in ["user", "assistant"] and content:
-                    messages.append({"role": role, "content": content})
+                # Déjà validé par Pydantic — role ∈ {user, assistant}, content non vide
+                messages.append({"role": msg.role, "content": msg.content})
 
         content_parts = []
         if image_base64:
@@ -233,6 +300,68 @@ async def chat_with_ai(session_id: str, message: str, image_base64: Optional[str
         return {"success": True, "response": response.content[0].text}
     except Exception as e:
         logger.error(f"AI Chat error: {e}")
+        return {"success": False, "error": str(e)}
+
+
+async def router_agent(message: str, history: List[dict]) -> str:
+    try:
+        messages = []
+        for msg in history[-6:]:
+            role = msg.get("role", "user")
+            content = msg.get("content", "")
+            if role in ("user", "assistant") and content:
+                messages.append({"role": role, "content": content})
+        messages.append({"role": "user", "content": message})
+        response = anthropic_client.messages.create(
+            model=HAIKU_MODEL, max_tokens=10, system=ROUTER_PROMPT, messages=messages
+        )
+        intent = response.content[0].text.strip().lower()
+        return intent if intent in ("chat", "search", "guide") else "chat"
+    except Exception as e:
+        logger.error(f"Router agent error: {e}")
+        return "chat"
+
+
+async def chat_agent(message: str, image_base64: Optional[str], history: List[dict]) -> dict:
+    try:
+        messages = []
+        for msg in history:
+            role = msg.get("role", "user")
+            content = msg.get("content", "")
+            if role in ("user", "assistant") and content:
+                messages.append({"role": role, "content": content})
+        content_parts = []
+        if image_base64:
+            content_parts.append({
+                "type": "image",
+                "source": {"type": "base64", "media_type": "image/jpeg", "data": image_base64}
+            })
+        content_parts.append({"type": "text", "text": message})
+        messages.append({"role": "user", "content": content_parts if image_base64 else message})
+        response = anthropic_client.messages.create(
+            model=HAIKU_MODEL, max_tokens=1024, system=SYSTEM_PROMPT, messages=messages
+        )
+        return {"success": True, "response": response.content[0].text}
+    except Exception as e:
+        logger.error(f"Chat agent error: {e}")
+        return {"success": False, "error": str(e)}
+
+
+async def guide_agent(message: str, history: List[dict]) -> dict:
+    try:
+        messages = []
+        for msg in history[-6:]:
+            role = msg.get("role", "user")
+            content = msg.get("content", "")
+            if role in ("user", "assistant") and content:
+                messages.append({"role": role, "content": content})
+        messages.append({"role": "user", "content": message})
+        response = anthropic_client.messages.create(
+            model=SONNET_MODEL, max_tokens=2048, system=GUIDE_PROMPT, messages=messages
+        )
+        return {"success": True, "response": response.content[0].text}
+    except Exception as e:
+        logger.error(f"Guide agent error: {e}")
         return {"success": False, "error": str(e)}
 
 
@@ -339,6 +468,16 @@ async def logout(response: Response):
 
 @api_router.post("/chat/send")
 async def send_chat_message(request: Request, chat_message: ChatMessage):
+    # ── Rate limiting par IP ──
+    client_ip = request.headers.get("X-Forwarded-For", "").split(",")[0].strip() or request.client.host
+    if not chat_rate_limiter.is_allowed(client_ip):
+        retry_after = chat_rate_limiter.retry_after(client_ip)
+        raise HTTPException(
+            status_code=429,
+            detail=f"Trop de messages. Réessayez dans {retry_after} secondes.",
+            headers={"Retry-After": str(retry_after)}
+        )
+
     session_id = request.cookies.get("chat_session") or str(uuid.uuid4())
 
     if chat_message.conversation_history is not None:
@@ -346,16 +485,37 @@ async def send_chat_message(request: Request, chat_message: ChatMessage):
     else:
         try:
             r = supabase.table('chat_sessions').select('messages').eq('session_id', session_id).maybe_single().execute()
-            chat_history = r.data['messages'] if r.data else []
+            raw_history = r.data['messages'] if r.data else []
+            # Valider et convertir les messages stockés en BDD
+            chat_history = []
+            for msg in raw_history:
+                try:
+                    chat_history.append(ChatHistoryMessage(
+                        role=msg.get("role", "user"),
+                        content=msg.get("content", "")[:5000]
+                    ))
+                except Exception:
+                    continue  # Ignorer les messages malformés
         except Exception:
             chat_history = []
 
-    ai_result = await chat_with_ai(
-        session_id=session_id,
-        message=chat_message.message,
-        image_base64=chat_message.image_base64,
-        chat_history=chat_history
-    )
+    # Convertir chat_history en List[dict] pour les agents
+    history_dicts = [{"role": m.role, "content": m.content} for m in chat_history] if isinstance(chat_history, list) and chat_history and hasattr(chat_history[0], "role") else (chat_history or [])
+
+    # 1. Router — détecte l'intent
+    intent = await router_agent(chat_message.message, history_dicts)
+    logger.info(f"Router intent: {intent}")
+
+    # 2. Dispatch vers l'agent approprié
+    if intent == "guide":
+        ai_result = await guide_agent(chat_message.message, history_dicts)
+    elif intent == "search":
+        ai_result = {
+            "success": True,
+            "response": '{"message":"Parfait, j\'ai tout ce qu\'il me faut ! Je lance la recherche d\'artisans près de chez vous.","suggestions":[],"collected":{"problem_understood":true,"location_known":true,"urgency_known":true},"diagnosis":null,"needs_location":false,"ready_to_search":true}'
+        }
+    else:
+        ai_result = await chat_agent(chat_message.message, chat_message.image_base64, history_dicts)
 
     if not ai_result.get("success"):
         raise HTTPException(status_code=500, detail=ai_result.get("error", "Erreur IA"))
@@ -665,6 +825,18 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(self)"
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self'; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com; "
+            "img-src 'self' data: blob: https://*.supabase.co; "
+            "connect-src 'self' https://*.supabase.co wss://*.supabase.co; "
+            "frame-ancestors 'none'; "
+            "base-uri 'self'; "
+            "form-action 'self';"
+        )
         return response
 
 
