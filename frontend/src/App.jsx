@@ -2,11 +2,12 @@ import { useState, useRef } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
 import './App.css'
 import ProfilePanel from './ProfilePanel'
+import useAuth from './hooks/useAuth'
 
 export default function App() {
+  const { user, logout } = useAuth()
   const [query, setQuery] = useState('')
   const [profileOpen, setProfileOpen] = useState(false)
-  const [user] = useState({ name: "Alex Dupont", email: "alex@email.com", initials: "AD" })
   const [images, setImages] = useState([])
   const textareaRef = useRef(null)
 
@@ -60,7 +61,7 @@ export default function App() {
         <div className="orb orb-3" />
       </div>
 
-      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
+      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} onLogout={logout} />
 
       <div className="page-layout">
         <nav>

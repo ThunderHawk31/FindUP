@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
 import ProfilePanel from './ProfilePanel'
+import useAuth from './hooks/useAuth'
 import './Compte.css'
 
 export default function Compte() {
-  const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
+  const { user, logout } = useAuth()
   const [profileOpen, setProfileOpen] = useState(false)
 
   return (
@@ -15,7 +16,7 @@ export default function Compte() {
         <div className="orb orb-3" />
       </div>
 
-      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
+      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} onLogout={logout} />
 
       <div className="compte-page-layout">
         <nav>
@@ -102,7 +103,7 @@ export default function Compte() {
           {/* Déconnexion */}
           <section className="compte-section">
             <div className="compte-actions">
-              <button className="compte-action-btn compte-action-btn--danger">
+              <button className="compte-action-btn compte-action-btn--danger" onClick={logout}>
                 <span className="compte-action-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
