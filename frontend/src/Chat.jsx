@@ -106,7 +106,6 @@ function GeolocButton({ onLocated, disabled }) {
       },
       () => {
         setLocating(false)
-        // Fallback : l'user tapera sa ville
       },
       { enableHighAccuracy: true, timeout: 10000 }
     )
@@ -133,8 +132,8 @@ export default function Chat() {
 
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
-  const [images, setImages] = useState([])        // File objects
-  const [imagePreviews, setImagePreviews] = useState([]) // blob URLs
+  const [images, setImages] = useState([])
+  const [imagePreviews, setImagePreviews] = useState([])
   const [isTyping, setIsTyping] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [showChoice, setShowChoice] = useState(false)
@@ -153,7 +152,6 @@ export default function Chat() {
     if (didInit.current) return
     didInit.current = true
 
-    // Message d'accueil
     const greeting = user
       ? `Bonjour ${user.name.split(' ')[0]} ! Je suis votre assistant findUp. Décrivez-moi votre problème et je trouverai la meilleure solution pour vous.`
       : "Bonjour ! Je suis votre assistant findUp. Décrivez-moi votre problème et je trouverai la meilleure solution pour vous."
@@ -165,7 +163,6 @@ export default function Chat() {
       time: now()
     }])
 
-    // Si on arrive avec ?q= depuis l'accueil
     const params = new URLSearchParams(window.location.search)
     const q = params.get('q')
     if (q) {
@@ -178,6 +175,17 @@ export default function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isTyping, showChoice])
 
+  // ── Scroll quand le clavier iOS s'ouvre ──
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!vv) return
+    const onResize = () => {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+    vv.addEventListener('resize', onResize)
+    return () => vv.removeEventListener('resize', onResize)
+  }, [])
+
   // ── Send message to backend ──
   const sendMessage = useCallback(async (text = input) => {
     const msg = text.trim()
@@ -185,7 +193,6 @@ export default function Chat() {
 
     setError('')
 
-    // Ajouter le message user
     const userMsg = {
       id: Date.now(),
       from: 'user',
@@ -199,7 +206,6 @@ export default function Chat() {
     setSuggestions([])
     setNeedsLocation(false)
 
-    // Préparer l'image en base64 si présente
     let imageBase64 = null
     if (images.length > 0) {
       try {
@@ -239,10 +245,8 @@ export default function Chat() {
 
       const data = await resp.json()
 
-      // Extraire le texte avant de stocker dans l'historique
       const botText = data.message || data.response || "Je n'ai pas compris, pouvez-vous reformuler ?"
 
-      // Mettre à jour l'historique de conversation pour les prochains appels
       setConversationHistory(prev => [
         ...prev,
         { role: 'user', content: msg },
@@ -257,19 +261,16 @@ export default function Chat() {
         time: now()
       }])
 
-      // Suggestions
       if (data.suggestions && data.suggestions.length > 0) {
         setSuggestions(data.suggestions)
       } else {
         setSuggestions([])
       }
 
-      // Géolocalisation
       if (data.needs_location) {
         setNeedsLocation(true)
       }
 
-      // Prêt à chercher → afficher la carte de choix
       if (data.ready_to_search) {
         setShowChoice(true)
         setSuggestions([])
@@ -289,7 +290,6 @@ export default function Chat() {
 
   // ── Géolocalisation callback ──
   function handleGeolocation(lat, lon) {
-    // Reverse geocoding simplifié : on envoie les coordonnées comme message
     sendMessage(`Ma position : ${lat.toFixed(4)}, ${lon.toFixed(4)}`)
   }
 
@@ -322,9 +322,6 @@ export default function Chat() {
 
   return (
     <div className="chat-page">
-      <div className="bg-orbs">
-        <div className="orb orb-1" /><div className="orb orb-2" /><div className="orb orb-3" />
-      </div>
 
       <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} onLogout={logout} />
 
