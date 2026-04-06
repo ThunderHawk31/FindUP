@@ -1,5 +1,5 @@
 
-export default function ProfilePanel({ isOpen, onClose, user }) {
+export default function ProfilePanel({ isOpen, onClose, user, onLogout }) {
   return (
     <>
       {isOpen && <div className="overlay" onClick={onClose} />}
@@ -9,7 +9,11 @@ export default function ProfilePanel({ isOpen, onClose, user }) {
           {user ? (
             <>
               <div className="panel-avatar">
-                <span className="avatar-initials">{user.initials}</span>
+                {user.picture ? (
+                  <img src={user.picture} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                ) : (
+                  <span className="avatar-initials">{user.initials}</span>
+                )}
               </div>
               <div className="panel-name">{user.name}</div>
               <div className="panel-sub">{user.email}</div>
@@ -48,6 +52,23 @@ export default function ProfilePanel({ isOpen, onClose, user }) {
               </span>
               Nous contacter
             </a>
+
+            <div className="panel-divider" />
+
+            <button
+              className="panel-item"
+              onClick={onLogout}
+              style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', textAlign: 'left' }}
+            >
+              <span className="panel-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+              </span>
+              Se déconnecter
+            </button>
           </>
         ) : (
           <a href="#" className="panel-item panel-item--muted">
@@ -60,4 +81,4 @@ export default function ProfilePanel({ isOpen, onClose, user }) {
       </div>
     </>
   )
-}
+}
