@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
 import ProfilePanel from './ProfilePanel'
-import useAuth from './hooks/useAuth'
 import './NotFound.css'
 
 export default function NotFound() {
-  const { user, logout } = useAuth()
+  const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
   const [profileOpen, setProfileOpen] = useState(false)
 
   return (
@@ -17,7 +16,7 @@ export default function NotFound() {
         <div className="orb orb-3" />
       </div>
 
-      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} onLogout={logout} />
+      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
 
       {/* Rubans chantier bleu/blanc en arrière-plan */}
       <div className="nf-tapes-bg" aria-hidden="true">

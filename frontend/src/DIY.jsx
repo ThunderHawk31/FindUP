@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
 import ProfilePanel from './ProfilePanel'
-import useAuth from './hooks/useAuth'
 import './DIY.css'
 
 const CATEGORIES = {
@@ -128,7 +127,7 @@ export default function DIY() {
   const params = new URLSearchParams(window.location.search)
   const catKey = params.get('cat') || 'plomberie'
   const category = CATEGORIES[catKey] || CATEGORIES.plomberie
-  const { user, logout } = useAuth()
+  const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
   const [profileOpen, setProfileOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
@@ -137,7 +136,7 @@ export default function DIY() {
       <div className="bg-orbs">
         <div className="orb orb-1" /><div className="orb orb-2" /><div className="orb orb-3" />
       </div>
-      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} onLogout={logout} />
+      <ProfilePanel isOpen={profileOpen} onClose={() => setProfileOpen(false)} user={user} />
       <StoreSheet product={selectedProduct} onClose={() => setSelectedProduct(null)} />
 
       <div className="diy-page-layout">
