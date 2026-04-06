@@ -1,5 +1,4 @@
 -- FindUP — Schéma Supabase (PostgreSQL + PostGIS)
--- Projet ID : jazxlqjgvldxeppkofnx
 -- Région : eu-west-3 (Paris)
 
 -- Extension géospatiale
@@ -115,6 +114,33 @@ CREATE TABLE transactions (
 
 CREATE INDEX idx_historique_guides_user_id ON historique_guides(user_id);
 CREATE INDEX idx_transactions_user_id ON transactions(user_id);
+
+-- ==================== ROW LEVEL SECURITY ====================
+
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE favoris ENABLE ROW LEVEL SECURITY;
+ALTER TABLE historique ENABLE ROW LEVEL SECURITY;
+ALTER TABLE historique_guides ENABLE ROW LEVEL SECURITY;
+ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE avis ENABLE ROW LEVEL SECURITY;
+ALTER TABLE chat_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE artisans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tags ENABLE ROW LEVEL SECURITY;
+ALTER TABLE artisan_tags ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users view own profile" ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Users insert own profile" ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "Users manage own favoris" ON favoris FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users manage own historique" ON historique FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users manage own historique_guides" ON historique_guides FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Users view own transactions" ON transactions FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Public read avis" ON avis FOR SELECT USING (true);
+CREATE POLICY "Auth users create avis" ON avis FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+CREATE POLICY "Service role full access chat_sessions" ON chat_sessions USING (true);
+CREATE POLICY "Public read artisans" ON artisans FOR SELECT USING (true);
+CREATE POLICY "Public read tags" ON tags FOR SELECT USING (true);
+CREATE POLICY "Public read artisan_tags" ON artisan_tags FOR SELECT USING (true);
 
 -- Fonction de recherche géospatiale
 CREATE FUNCTION search_artisans_nearby(

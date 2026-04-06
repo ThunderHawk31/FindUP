@@ -4,7 +4,7 @@ import ProfilePanel from './ProfilePanel'
 import useAuth from './hooks/useAuth'
 import './Contact.css'
 
-const WEB3FORMS_KEY = '23c8ac38-2ec9-49e7-b550-93d7e814eecb'
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY || '23c8ac38-2ec9-49e7-b550-93d7e814eecb'
 
 const SUBJECTS = [
   { id: 'bug', label: 'Signaler un bug' },

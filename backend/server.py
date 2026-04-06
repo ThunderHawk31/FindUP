@@ -21,8 +21,9 @@ import anthropic as anthropic_module
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Supabase sync client
-supabase: Client = None
+# Supabase clients
+supabase: Client = None        # service_role — opérations admin uniquement
+supabase_anon: Client = None   # anon key — opérations utilisateur (RLS appliquée)
 
 # Anthropic
 ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
@@ -81,12 +82,16 @@ chat_rate_limiter = RateLimiter(max_requests=10, window_seconds=60)
 
 @app.on_event("startup")
 async def startup():
-    global supabase
+    global supabase, supabase_anon
     supabase = create_client(
         os.environ.get('SUPABASE_URL'),
         os.environ.get('SUPABASE_SERVICE_KEY')
     )
-    logger.info("Supabase client initialized")
+    supabase_anon = create_client(
+        os.environ.get('SUPABASE_URL'),
+        os.environ.get('SUPABASE_ANON_KEY')
+    )
+    logger.info("Supabase clients initialized")
     try:
         r = supabase.table('artisans').select('*').limit(1).execute()
         logger.info(f"Supabase connected OK — artisans sample: {len(r.data or [])} row(s)")
@@ -161,7 +166,7 @@ class FavoriCreate(BaseModel):
 
 class HistoriqueCreate(BaseModel):
     artisan_id: str
-    action: str  # "vu" ou "appele"
+    action: str = Field(pattern=r"^(vu|appele)$")
 
 class ProfileUpdate(BaseModel):
     prenom: Optional[str] = None
@@ -477,6 +482,18 @@ async def logout(response: Response):
     return {"message": "Déconnecté avec succès"}
 
 
+@api_router.delete("/auth/account")
+async def delete_account(request: Request, response: Response):
+    user = await require_auth(request)
+    try:
+        supabase.auth.admin.delete_user(user['user_id'])
+        response.delete_cookie(key="session_token", path="/")
+        return {"message": "Compte supprimé"}
+    except Exception as e:
+        logger.error(f"Delete account error: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la suppression du compte")
+
+
 # ==================== CHAT ROUTES ====================
 
 @api_router.post("/chat/send")
@@ -571,8 +588,12 @@ async def send_chat_message(request: Request, chat_message: ChatMessage):
 async def reset_chat(request: Request, response: Response):
     session_id = request.cookies.get("chat_session")
     if session_id:
+        user = await get_current_user(request)
         try:
-            supabase.table('chat_sessions').delete().eq('session_id', session_id).execute()
+            q = supabase.table('chat_sessions').delete().eq('session_id', session_id)
+            if user:
+                q = q.eq('user_id', user['user_id'])
+            q.execute()
         except Exception:
             pass
     response.delete_cookie(key="chat_session")
@@ -892,13 +913,25 @@ async def root():
     return {"message": "FindUP API — Trouvez le bon artisan près de chez vous"}
 
 
+class CSRFMiddleware(BaseHTTPMiddleware):
+    SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
+    async def dispatch(self, request, call_next):
+        if request.method in self.SAFE_METHODS:
+            return await call_next(request)
+        origin = request.headers.get("origin", "")
+        allowed = os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
+        if origin and origin not in allowed:
+            return JSONResponse(status_code=403, content={"detail": "Origin non autorisée"})
+        return await call_next(request)
+
+
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
-        response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(self)"
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
@@ -917,11 +950,12 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 app.include_router(api_router)
 
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(CSRFMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
     allow_origins=os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(','),
-    allow_methods=["GET", "POST", "DELETE"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["Authorization", "Content-Type"],
 )

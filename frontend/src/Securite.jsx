@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
+import { supabase } from './supabaseClient'
+import useAuth from './hooks/useAuth'
 import './Securite.css'
+
+const API_URL = import.meta.env.VITE_API_URL || 'https://alert-cat-production.up.railway.app'
 
 function PasswordStrength({ password }) {
     const checks = [
@@ -86,7 +90,7 @@ function PasswordField({ label, value, onChange, placeholder, error }) {
 }
 
 export default function Securite() {
-    const [user] = useState({ initials: 'AD' })
+    const { user, logout, getToken } = useAuth()
     const [form, setForm] = useState({ current: '', newPwd: '', confirm: '' })
     const [errors, setErrors] = useState({})
     const [loading, setLoading] = useState(false)
@@ -113,11 +117,31 @@ export default function Securite() {
         const errs = validate()
         if (Object.keys(errs).length) { setErrors(errs); return }
         setLoading(true)
-        await new Promise(r => setTimeout(r, 950))
-        setLoading(false)
-        setSaved(true)
-        setForm({ current: '', newPwd: '', confirm: '' })
-        setTimeout(() => setSaved(false), 3500)
+        try {
+            const { error } = await supabase.auth.updateUser({ password: form.newPwd })
+            if (error) throw error
+            setSaved(true)
+            setForm({ current: '', newPwd: '', confirm: '' })
+            setTimeout(() => setSaved(false), 3500)
+        } catch (err) {
+            setErrors({ current: err.message || 'Erreur lors du changement' })
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleDeleteAccount = async () => {
+        try {
+            const token = await getToken()
+            await fetch(`${API_URL}/api/auth/account`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: 'include'
+            })
+            await logout()
+        } catch (err) {
+            console.error('Erreur suppression compte:', err)
+        }
     }
 
     return (
@@ -139,7 +163,7 @@ export default function Securite() {
                             </a>
                             <div className="nav-actions">
                                 <button className="avatar-btn">
-                                    <span className="avatar-initials">{user.initials}</span>
+                                    <span className="avatar-initials">{user?.initials}</span>
                                 </button>
                             </div>
                         </div>
@@ -256,7 +280,7 @@ export default function Securite() {
                                 <div className="sec-danger-confirm-actions">
                                     <button
                                         className="sec-delete-btn sec-delete-btn--confirm"
-                                        onClick={() => { /* TODO: appel API */ }}
+                                        onClick={handleDeleteAccount}
                                     >
                                         Oui, supprimer
                                     </button>
