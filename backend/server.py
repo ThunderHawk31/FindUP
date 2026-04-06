@@ -163,6 +163,19 @@ class HistoriqueCreate(BaseModel):
     artisan_id: str
     action: str  # "vu" ou "appele"
 
+class ProfileUpdate(BaseModel):
+    prenom: Optional[str] = None
+    nom: Optional[str] = None
+    adresse: Optional[str] = None
+    ville: Optional[str] = None
+    code_postal: Optional[str] = None
+    telephone: Optional[str] = None
+
+class HistoriqueGuideCreate(BaseModel):
+    theme: str
+    titre: str
+    description: Optional[str] = None
+
 class SearchRequest(BaseModel):
     metiers: List[str]
     tags: List[str]
@@ -705,6 +718,67 @@ async def create_avis(artisan_id: str, avis: AvisCreate, request: Request):
         auteur=doc["auteur"],
         date=inserted.get('created_at') or datetime.now(timezone.utc).isoformat()
     )
+
+
+# ==================== PROFILE ROUTES ====================
+
+@api_router.get("/profile")
+async def get_profile(request: Request):
+    user = await require_auth(request)
+    r = supabase.table('profiles').select('*').eq('id', user['user_id']).maybe_single().execute()
+    if not r.data:
+        raise HTTPException(status_code=404, detail="Profil non trouvé")
+    return r.data
+
+
+@api_router.put("/profile")
+async def update_profile(profile: ProfileUpdate, request: Request):
+    user = await require_auth(request)
+    updates = {k: v for k, v in profile.model_dump().items() if v is not None}
+    if not updates:
+        raise HTTPException(status_code=400, detail="Aucun champ à mettre à jour")
+    # Reconstruire name si prenom ou nom fournis
+    if 'prenom' in updates or 'nom' in updates:
+        current = supabase.table('profiles').select('prenom,nom,name').eq('id', user['user_id']).maybe_single().execute()
+        prenom = updates.get('prenom') or (current.data or {}).get('prenom', '')
+        nom = updates.get('nom') or (current.data or {}).get('nom', '')
+        if prenom or nom:
+            updates['name'] = f"{prenom} {nom}".strip()
+    updates['updated_at'] = datetime.now(timezone.utc).isoformat()
+    supabase.table('profiles').update(updates).eq('id', user['user_id']).execute()
+    return {"message": "Profil mis à jour"}
+
+
+# ==================== HISTORIQUE GUIDES ROUTES ====================
+
+@api_router.get("/historique-guides")
+async def get_historique_guides(request: Request):
+    user = await require_auth(request)
+    r = supabase.table('historique_guides').select('*').eq('user_id', user['user_id']).order('date', desc=True).execute()
+    return r.data or []
+
+
+@api_router.post("/historique-guides")
+async def add_historique_guide(guide: HistoriqueGuideCreate, request: Request):
+    user = await get_current_user(request)
+    if not user:
+        return {"message": "Non connecté, guide non enregistré"}
+    supabase.table('historique_guides').insert({
+        "user_id": user['user_id'],
+        "theme": guide.theme,
+        "titre": guide.titre,
+        "description": guide.description,
+    }).execute()
+    return {"message": "Guide enregistré dans l'historique"}
+
+
+# ==================== TRANSACTIONS ROUTES ====================
+
+@api_router.get("/transactions")
+async def get_transactions(request: Request):
+    user = await require_auth(request)
+    r = supabase.table('transactions').select('*').eq('user_id', user['user_id']).order('created_at', desc=True).execute()
+    return r.data or []
 
 
 # ==================== FAVORIS ROUTES ====================

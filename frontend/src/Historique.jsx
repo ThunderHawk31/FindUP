@@ -1,39 +1,50 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
 import ProfilePanel from './ProfilePanel'
 import useAuth from './hooks/useAuth'
 import './Historique.css'
 
-const GUIDES = [
-  {
-    id: 1,
-    title: 'Réparer une fuite sous évier',
-    date: '24 mars 2026',
-    category: 'Plomberie',
-    color: '#1d4ed8',
-    summary: 'Guide complet pour identifier et réparer une fuite au niveau du siphon ou des raccords sous un évier de cuisine.',
-  },
-  {
-    id: 2,
-    title: 'Changer une prise électrique',
-    date: '18 mars 2026',
-    category: 'Électricité',
-    color: '#1B3A6B',
-    summary: 'Étapes détaillées pour remplacer une prise de courant défectueuse en toute sécurité.',
-  },
-  {
-    id: 3,
-    title: 'Poser du carrelage mural',
-    date: '12 mars 2026',
-    category: 'Carrelage',
-    color: '#a07830',
-    summary: 'Techniques de pose de carrelage mural pour salle de bain, incluant la préparation du support et le jointoiement.',
-  },
-]
+const API_URL = import.meta.env.VITE_API_URL || 'https://alert-cat-production.up.railway.app'
+
+const THEME_COLORS = {
+  'Plomberie': '#1d4ed8',
+  'Électricité': '#1B3A6B',
+  'Carrelage': '#a07830',
+  'Maçonnerie': '#7c3aed',
+  'Menuiserie': '#b45309',
+  'Peinture': '#0891b2',
+  'Toiture': '#dc2626',
+  'Chauffage': '#ea580c',
+}
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+}
 
 export default function Historique() {
-  const { user, logout } = useAuth()
+  const { user, logout, getToken } = useAuth()
   const [profileOpen, setProfileOpen] = useState(false)
+  const [guides, setGuides] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!user) { setLoading(false); return }
+    async function fetchGuides() {
+      try {
+        const token = await getToken()
+        const r = await fetch(`${API_URL}/api/historique-guides`, {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include'
+        })
+        if (r.ok) setGuides(await r.json())
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchGuides()
+  }, [user])
 
   return (
     <>
@@ -78,19 +89,22 @@ export default function Historique() {
           </section>
 
           <section className="hist-grid">
-            {GUIDES.map(guide => (
+            {loading ? (
+              <p className="hist-sub">Chargement…</p>
+            ) : !user ? (
+              <p className="hist-sub">Connectez-vous pour voir votre historique.</p>
+            ) : guides.length === 0 ? (
+              <p className="hist-sub">Aucun guide consulté pour l'instant.</p>
+            ) : guides.map(guide => (
               <a key={guide.id} href="/guide" className="hist-card">
                 <div className="hist-card-top">
-                  <span
-                    className="hist-card-cat"
-                    style={{ color: guide.color }}
-                  >
-                    {guide.category}
+                  <span className="hist-card-cat" style={{ color: THEME_COLORS[guide.theme] || '#2563EB' }}>
+                    {guide.theme}
                   </span>
-                  <span className="hist-card-date">{guide.date}</span>
+                  <span className="hist-card-date">{formatDate(guide.date)}</span>
                 </div>
-                <h2 className="hist-card-title">{guide.title}</h2>
-                <p className="hist-card-summary">{guide.summary}</p>
+                <h2 className="hist-card-title">{guide.titre}</h2>
+                <p className="hist-card-summary">{guide.description}</p>
               </a>
             ))}
           </section>

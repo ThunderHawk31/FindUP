@@ -1,44 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
+import useAuth from './hooks/useAuth'
 import './Achats.css'
 
-const TRANSACTIONS = [
-    {
-        id: 'TXN-2025-001',
-        guide: 'Réparer une fuite sous l\'évier',
-        category: 'Plomberie',
-        date: '2025-06-12',
-        amount: 4.99,
-    },
-    {
-        id: 'TXN-2025-002',
-        guide: 'Changer un disjoncteur',
-        category: 'Électricité',
-        date: '2025-05-28',
-        amount: 5.99,
-    },
-    {
-        id: 'TXN-2025-003',
-        guide: 'Poser un parquet flottant',
-        category: 'Menuiserie',
-        date: '2025-04-14',
-        amount: 6.99,
-    },
-    {
-        id: 'TXN-2025-004',
-        guide: 'Peindre un mur intérieur',
-        category: 'Peinture',
-        date: '2025-03-02',
-        amount: 3.99,
-    },
-    {
-        id: 'TXN-2025-005',
-        guide: 'Reboucher des fissures',
-        category: 'Maçonnerie',
-        date: '2025-01-19',
-        amount: 4.49,
-    },
-]
+const API_URL = import.meta.env.VITE_API_URL || 'https://alert-cat-production.up.railway.app'
 
 function formatDate(iso) {
     const d = new Date(iso)
@@ -46,9 +11,30 @@ function formatDate(iso) {
 }
 
 export default function Achats() {
-    const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
+    const { user, getToken } = useAuth()
+    const [transactions, setTransactions] = useState([])
+    const [loading, setLoading] = useState(true)
 
-    const total = TRANSACTIONS.reduce((s, t) => s + t.amount, 0)
+    useEffect(() => {
+        if (!user) { setLoading(false); return }
+        async function fetchTransactions() {
+            try {
+                const token = await getToken()
+                const r = await fetch(`${API_URL}/api/transactions`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    credentials: 'include'
+                })
+                if (r.ok) setTransactions(await r.json())
+            } catch (e) {
+                console.error(e)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchTransactions()
+    }, [user])
+
+    const total = transactions.reduce((s, t) => s + Number(t.montant || 0), 0)
 
     return (
         <>
@@ -88,7 +74,7 @@ export default function Achats() {
                     {/* Stats */}
                     <section className="ach-stats">
                         <div className="ach-stat-card">
-                            <span className="ach-stat-value">{TRANSACTIONS.length}</span>
+                            <span className="ach-stat-value">{transactions.length}</span>
                             <span className="ach-stat-label">Guides achetés</span>
                         </div>
                         <div className="ach-stat-divider" />
@@ -103,7 +89,9 @@ export default function Achats() {
 
                     {/* Liste */}
                     <section className="ach-list">
-                        {TRANSACTIONS.length === 0 ? (
+                        {loading ? (
+                            <p className="ach-sub">Chargement…</p>
+                        ) : transactions.length === 0 ? (
                             <div className="ach-empty">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="36" height="36">
                                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -112,18 +100,18 @@ export default function Achats() {
                                 </svg>
                                 <p>Aucune transaction</p>
                             </div>
-                        ) : TRANSACTIONS.map((t) => (
+                        ) : transactions.map((t) => (
                             <div key={t.id} className="ach-item">
                                 <div className="ach-item-left">
-                                    <span className="ach-item-title">{t.guide}</span>
+                                    <span className="ach-item-title">{t.description}</span>
                                     <div className="ach-item-meta">
-                                        <span className="ach-item-date">{formatDate(t.date)}</span>
+                                        <span className="ach-item-date">{formatDate(t.created_at)}</span>
                                         <span className="ach-item-dot" />
-                                        <span className="ach-item-category">{t.category}</span>
+                                        <span className="ach-item-category">{t.statut}</span>
                                     </div>
                                 </div>
                                 <div className="ach-item-right">
-                                    <span className="ach-item-amount">{t.amount.toFixed(2).replace('.', ',')} €</span>
+                                    <span className="ach-item-amount">{Number(t.montant).toFixed(2).replace('.', ',')} €</span>
                                 </div>
                             </div>
                         ))}

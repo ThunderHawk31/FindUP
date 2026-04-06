@@ -1,17 +1,39 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import GlassSurface from './components/ui/GlassSurface'
+import useAuth from './hooks/useAuth'
 import './EditInfos.css'
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://alert-cat-production.up.railway.app'
+
 export default function EditInfos() {
-    const [user] = useState({ name: 'Alex Dupont', email: 'alex@email.com', initials: 'AD' })
-    const [form, setForm] = useState({
-        prenom: 'Alex',
-        nom: 'Dupont',
-        email: 'alex@email.com',
-    })
+    const { user, getToken } = useAuth()
+    const [form, setForm] = useState({ prenom: '', nom: '', email: '' })
     const [saved, setSaved] = useState(false)
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState({})
+
+    useEffect(() => {
+        if (!user) return
+        async function fetchProfile() {
+            try {
+                const token = await getToken()
+                const r = await fetch(`${API_URL}/api/profile`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    credentials: 'include'
+                })
+                if (r.ok) {
+                    const data = await r.json()
+                    const [prenom = '', ...rest] = (data.name || user.name || '').split(' ')
+                    setForm({
+                        prenom: data.prenom || prenom,
+                        nom: data.nom || rest.join(' '),
+                        email: data.email || user.email || '',
+                    })
+                }
+            } catch (e) { console.error(e) }
+        }
+        fetchProfile()
+    }, [user])
 
     const validate = () => {
         const e = {}
@@ -32,10 +54,21 @@ export default function EditInfos() {
         const errs = validate()
         if (Object.keys(errs).length) { setErrors(errs); return }
         setLoading(true)
-        await new Promise(r => setTimeout(r, 900))
-        setLoading(false)
-        setSaved(true)
-        setTimeout(() => setSaved(false), 3000)
+        try {
+            const token = await getToken()
+            await fetch(`${API_URL}/api/profile`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                credentials: 'include',
+                body: JSON.stringify({ prenom: form.prenom, nom: form.nom })
+            })
+            setSaved(true)
+            setTimeout(() => setSaved(false), 3000)
+        } catch (e) {
+            console.error(e)
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -57,7 +90,7 @@ export default function EditInfos() {
                             </a>
                             <div className="nav-actions">
                                 <button className="avatar-btn">
-                                    <span className="avatar-initials">{user.initials}</span>
+                                    <span className="avatar-initials">{user?.initials}</span>
                                 </button>
                             </div>
                         </div>
@@ -75,7 +108,7 @@ export default function EditInfos() {
 
                     <section className="ei-card">
                         <div className="ei-avatar-row">
-                            <div className="ei-avatar">{user.initials}</div>
+                            <div className="ei-avatar">{user?.initials}</div>
                             <div className="ei-avatar-meta">
                                 <span className="ei-avatar-name">{form.prenom} {form.nom}</span>
                                 <span className="ei-avatar-email">{form.email}</span>

@@ -9,8 +9,14 @@
 CREATE TABLE profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id),
     name TEXT NOT NULL,
+    prenom TEXT,
+    nom TEXT,
     email TEXT NOT NULL,
     picture TEXT,
+    adresse TEXT,
+    ville TEXT,
+    code_postal TEXT,
+    telephone TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -86,6 +92,29 @@ CREATE TABLE chat_sessions (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Historique des guides consultés
+CREATE TABLE historique_guides (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    theme TEXT NOT NULL,
+    titre TEXT NOT NULL,
+    description TEXT,
+    date TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Transactions / achats
+CREATE TABLE transactions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    montant NUMERIC(10, 2) NOT NULL,
+    description TEXT,
+    statut TEXT NOT NULL DEFAULT 'completed',  -- 'pending', 'completed', 'refunded'
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_historique_guides_user_id ON historique_guides(user_id);
+CREATE INDEX idx_transactions_user_id ON transactions(user_id);
 
 -- Fonction de recherche géospatiale
 CREATE FUNCTION search_artisans_nearby(
