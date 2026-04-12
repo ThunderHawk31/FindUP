@@ -40,25 +40,13 @@ export default function CookieBanner() {
         }
 
         @keyframes cb-slide-in {
-          from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-24px) scale(0.96);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0) scale(1);
-          }
+          from { opacity: 0; transform: translateX(-50%) translateY(-24px) scale(0.96); }
+          to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
         }
 
         @keyframes cb-slide-out {
-          from {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0) scale(1);
-          }
-          to {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-16px) scale(0.97);
-          }
+          from { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+          to   { opacity: 0; transform: translateX(-50%) translateY(-16px) scale(0.97); }
         }
 
         .cb-card {
@@ -67,11 +55,10 @@ export default function CookieBanner() {
           border-radius: 20px;
           padding: 18px 20px;
           display: flex;
+          flex-direction: row;
           align-items: center;
           gap: 16px;
-          box-shadow:
-            0 4px 24px rgba(7, 16, 31, 0.10),
-            0 1px 4px rgba(7, 16, 31, 0.06);
+          box-shadow: 0 4px 24px rgba(7, 16, 31, 0.10), 0 1px 4px rgba(7, 16, 31, 0.06);
         }
 
         .cb-text {
@@ -91,11 +78,10 @@ export default function CookieBanner() {
 
         .cb-desc {
           font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
-          font-size: 12.5px;
-          font-weight: 400;
+          font-size: 13px;
           color: var(--muted, #6b7a96);
           margin: 0;
-          line-height: 1.55;
+          line-height: 1.5;
           letter-spacing: -0.005em;
         }
 
@@ -106,6 +92,7 @@ export default function CookieBanner() {
 
         .cb-actions {
           display: flex;
+          flex-direction: row;
           gap: 8px;
           flex-shrink: 0;
         }
@@ -118,16 +105,14 @@ export default function CookieBanner() {
           background: rgba(107, 122, 150, 0.10);
           border: none;
           border-radius: 10px;
-          padding: 8px 14px;
+          padding: 9px 14px;
           cursor: pointer;
           transition: background 0.18s;
-          white-space: nowrap;
           letter-spacing: -0.01em;
+          white-space: nowrap;
         }
 
-        .cb-btn-decline:hover {
-          background: rgba(107, 122, 150, 0.18);
-        }
+        .cb-btn-decline:hover { background: rgba(107, 122, 150, 0.18); }
 
         .cb-btn-accept {
           font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
@@ -137,15 +122,33 @@ export default function CookieBanner() {
           background: var(--navy, #07101F);
           border: none;
           border-radius: 10px;
-          padding: 8px 16px;
+          padding: 9px 16px;
           cursor: pointer;
           transition: opacity 0.18s;
-          white-space: nowrap;
           letter-spacing: -0.01em;
+          white-space: nowrap;
         }
 
-        .cb-btn-accept:hover {
-          opacity: 0.85;
+        .cb-btn-accept:hover { opacity: 0.85; }
+
+        /* Mobile : colonne, boutons pleine largeur */
+        @media (max-width: 500px) {
+          .cb-card {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 14px;
+          }
+
+          .cb-actions {
+            flex-direction: row;
+          }
+
+          .cb-btn-decline,
+          .cb-btn-accept {
+            flex: 1;
+            text-align: center;
+            padding: 11px 0;
+          }
         }
       `}</style>
 
@@ -159,12 +162,8 @@ export default function CookieBanner() {
                         </p>
                     </div>
                     <div className="cb-actions">
-                        <button className="cb-btn-decline" onClick={() => dismiss('declined')}>
-                            Refuser
-                        </button>
-                        <button className="cb-btn-accept" onClick={() => dismiss('accepted')}>
-                            Accepter
-                        </button>
+                        <button className="cb-btn-decline" onClick={() => dismiss('declined')}>Refuser</button>
+                        <button className="cb-btn-accept" onClick={() => dismiss('accepted')}>Accepter</button>
                     </div>
                 </div>
             </div>
