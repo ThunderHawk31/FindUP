@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
 
-/**
- * Hook partagé d'authentification Supabase.
- * Retourne { user, loading, login, register, loginWithGoogle, logout }
- *
- * user = null (pas connecté) ou { id, email, name, initials, picture }
- */
-
 const API_URL = import.meta.env.VITE_API_URL || 'https://alert-cat-production.up.railway.app'
 
 function buildInitials(name) {
@@ -35,13 +28,13 @@ export default function useAuth() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Récupérer la session active
+    // Lire la session Supabase existante au chargement
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session ? formatUser(session.user) : null)
       setLoading(false)
     })
 
-    // Écouter les changements d'auth (login, logout, token refresh)
+    // Écouter les changements (refresh token, signOut...)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session ? formatUser(session.user) : null)
     })
@@ -50,22 +43,50 @@ export default function useAuth() {
   }, [])
 
   async function login(email, password) {
+    // 1. Appel backend → fait le login Supabase + pose le cookie HttpOnly
+    const res = await fetch(`${API_URL}/api/auth/login`, {
+      method: 'POST',
+      credentials: 'include',              // indispensable pour recevoir le cookie
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body.detail || 'Email ou mot de passe incorrect')
+    }
+
+    // 2. Connecter aussi Supabase JS côté client (pour les appels directs au SDK)
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
+
     return data
   }
 
   async function register(email, password, name) {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { name } }
+    // 1. Appel backend → crée le compte Supabase + pose le cookie HttpOnly
+    const res = await fetch(`${API_URL}/api/auth/register`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, name })
     })
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body.detail || 'Erreur lors de l\'inscription')
+    }
+
+    // 2. Connecter Supabase JS côté client
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
+
     return data
   }
 
   async function loginWithGoogle() {
+    // OAuth : Supabase gère le redirect, le cookie backend sera absent
+    // (nécessite un endpoint callback côté backend pour le poser — hors scope)
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin + '/' }
@@ -74,12 +95,19 @@ export default function useAuth() {
   }
 
   async function logout() {
+    // 1. Supprimer le cookie côté serveur en premier
+    await fetch(`${API_URL}/api/auth/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    }).catch(() => { }) // non bloquant
+
+    // 2. Déconnecter Supabase JS
     await supabase.auth.signOut()
+
     setUser(null)
     window.location.href = '/'
   }
 
-  /** Récupère le token JWT pour les appels API backend */
   async function getToken() {
     const { data: { session } } = await supabase.auth.getSession()
     return session?.access_token || null

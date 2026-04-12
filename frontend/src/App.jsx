@@ -3,6 +3,7 @@ import GlassSurface from './components/ui/GlassSurface'
 import './App.css'
 import ProfilePanel from './ProfilePanel'
 import useAuth from './hooks/useAuth'
+import CookieBanner from './components/CookieBanner'   // ← ajout
 
 export default function App() {
   const { user, logout } = useAuth()
@@ -55,6 +56,8 @@ export default function App() {
 
   return (
     <>
+      <CookieBanner />                                  {/* ← ajout */}
+
       <div className="bg-orbs">
         <div className="orb orb-1" />
         <div className="orb orb-2" />
