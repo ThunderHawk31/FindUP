@@ -14,6 +14,7 @@ import NotFound from './Notfound.jsx'
 import EditInfos from './EditInfos.jsx'
 import Achats from './Achats.jsx'
 import Securite from './Securite.jsx'
+import PolitiqueConfidentialite from './PolitiqueConfidentialite.jsx'
 
 const path = window.location.pathname
 const root = createRoot(document.getElementById('root'))
@@ -40,6 +41,8 @@ if (path === '/login') {
   root.render(<StrictMode><Securite /></StrictMode>)
 } else if (path === '/contact') {
   root.render(<StrictMode><Contact /></StrictMode>)
+} else if (path === '/politique-confidentialite') {
+  root.render(<StrictMode><PolitiqueConfidentialite /></StrictMode>)
 } else if (path === '/') {
   root.render(<StrictMode><App /></StrictMode>)
 } else {
