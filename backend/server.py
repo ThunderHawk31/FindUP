@@ -913,14 +913,21 @@ async def root():
     return {"message": "FindUP API — Trouvez le bon artisan près de chez vous"}
 
 
+def _get_allowed_origins() -> list[str]:
+    """Parse CORS_ORIGINS en strippant les espaces parasites."""
+    raw = os.environ.get("CORS_ORIGINS", "http://localhost:3000")
+    return [o.strip() for o in raw.split(",") if o.strip()]
+
+
 class CSRFMiddleware(BaseHTTPMiddleware):
     SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
     async def dispatch(self, request, call_next):
         if request.method in self.SAFE_METHODS:
             return await call_next(request)
         origin = request.headers.get("origin", "")
-        allowed = os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
+        allowed = _get_allowed_origins()
         if origin and origin not in allowed:
+            logger.warning(f"CSRF blocked origin: {origin!r} (allowed: {allowed})")
             return JSONResponse(status_code=403, content={"detail": "Origin non autorisée"})
         return await call_next(request)
 
@@ -928,6 +935,10 @@ class CSRFMiddleware(BaseHTTPMiddleware):
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
+        # Ne pas ajouter de headers de sécurité sur les preflight CORS
+        # sinon ils interfèrent avec les headers Access-Control-* ajoutés par CORSMiddleware
+        if request.method == "OPTIONS":
+            return response
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
@@ -949,13 +960,17 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 app.include_router(api_router)
 
+# Ordre d'ajout (LIFO) : CORSMiddleware doit être ajouté EN DERNIER
+# pour s'exécuter EN PREMIER sur la requête entrante.
+# Requête  →  CORS  →  CSRF  →  SecurityHeaders  →  Route
+# Réponse  ←  CORS  ←  CSRF  ←  SecurityHeaders  ←  Route
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(CSRFMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(','),
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_origins=_get_allowed_origins(),
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type"],
 )
