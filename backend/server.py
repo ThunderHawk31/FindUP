@@ -2,7 +2,6 @@ from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from starlette.middleware.base import BaseHTTPMiddleware
 from supabase import create_client, Client
 import os
 import logging
@@ -916,35 +915,23 @@ async def root():
 def _get_allowed_origins() -> list[str]:
     """Parse CORS_ORIGINS en strippant les espaces parasites."""
     raw = os.environ.get("CORS_ORIGINS", "http://localhost:3000")
-    return [o.strip() for o in raw.split(",") if o.strip()]
+    origins = [o.strip() for o in raw.split(",") if o.strip()]
+    logger.info(f"CORS allowed origins: {origins}")
+    return origins
 
 
-class CSRFMiddleware(BaseHTTPMiddleware):
-    SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
-    async def dispatch(self, request, call_next):
-        if request.method in self.SAFE_METHODS:
-            return await call_next(request)
-        origin = request.headers.get("origin", "")
-        allowed = _get_allowed_origins()
-        if origin and origin not in allowed:
-            logger.warning(f"CSRF blocked origin: {origin!r} (allowed: {allowed})")
-            return JSONResponse(status_code=403, content={"detail": "Origin non autorisée"})
-        return await call_next(request)
+# ── Middlewares ASGI purs (évite les conflits BaseHTTPMiddleware ↔ CORSMiddleware) ──
 
+class SecurityHeadersMiddleware:
+    """Ajoute les headers de sécurité. Middleware ASGI pur."""
 
-class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request, call_next):
-        response = await call_next(request)
-        # Ne pas ajouter de headers de sécurité sur les preflight CORS
-        # sinon ils interfèrent avec les headers Access-Control-* ajoutés par CORSMiddleware
-        if request.method == "OPTIONS":
-            return response
-        response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["X-Frame-Options"] = "DENY"
-        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=(self)"
-        response.headers["Content-Security-Policy"] = (
+    SECURITY_HEADERS = {
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=(self)",
+        "Content-Security-Policy": (
             "default-src 'self'; "
             "script-src 'self'; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
@@ -954,23 +941,45 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "frame-ancestors 'none'; "
             "base-uri 'self'; "
             "form-action 'self';"
-        )
-        return response
+        ),
+    }
 
+    def __init__(self, app):
+        self.app = app
 
-app.include_router(api_router)
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        # Skip preflight OPTIONS — laisser CORSMiddleware gérer seul
+        method = scope.get("method", "")
+        if method == "OPTIONS":
+            await self.app(scope, receive, send)
+            return
+
+        async def send_with_headers(message):
+            if message["type"] == "http.response.start":
+                headers = dict(message.get("headers", []))
+                for key, value in self.SECURITY_HEADERS.items():
+                    headers[key.lower().encode()] = value.encode()
+                message["headers"] = list(headers.items())
+            await send(message)
+
+        await self.app(scope, receive, send_with_headers)
+
 
 # Ordre d'ajout (LIFO) : CORSMiddleware doit être ajouté EN DERNIER
 # pour s'exécuter EN PREMIER sur la requête entrante.
-# Requête  →  CORS  →  CSRF  →  SecurityHeaders  →  Route
-# Réponse  ←  CORS  ←  CSRF  ←  SecurityHeaders  ←  Route
+# Requête  →  CORS  →  SecurityHeaders  →  Route
 app.add_middleware(SecurityHeadersMiddleware)
-app.add_middleware(CSRFMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
     allow_origins=_get_allowed_origins(),
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+app.include_router(api_router)
