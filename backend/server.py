@@ -922,16 +922,20 @@ def _get_allowed_origins() -> list[str]:
 
 # ── Middlewares ASGI purs (évite les conflits BaseHTTPMiddleware ↔ CORSMiddleware) ──
 
-class SecurityHeadersMiddleware:
-    """Ajoute les headers de sécurité. Middleware ASGI pur."""
+_CSP_ENABLED = os.environ.get("CSP_ENABLED", "true").lower() != "false"
 
-    SECURITY_HEADERS = {
-        "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "DENY",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-        "Permissions-Policy": "camera=(), microphone=(), geolocation=(self)",
-        "Content-Security-Policy": (
+_SECURITY_HEADERS: list[tuple[bytes, bytes]] = [
+    (b"x-content-type-options", b"nosniff"),
+    (b"x-frame-options", b"DENY"),
+    (b"referrer-policy", b"strict-origin-when-cross-origin"),
+    (b"strict-transport-security", b"max-age=31536000; includeSubDomains"),
+    (b"permissions-policy", b"camera=(), microphone=(), geolocation=(self)"),
+]
+
+if _CSP_ENABLED:
+    _SECURITY_HEADERS.append((
+        b"content-security-policy",
+        (
             "default-src 'self'; "
             "script-src 'self'; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
@@ -941,8 +945,14 @@ class SecurityHeadersMiddleware:
             "frame-ancestors 'none'; "
             "base-uri 'self'; "
             "form-action 'self';"
-        ),
-    }
+        ).encode(),
+    ))
+
+logger.info(f"SecurityHeaders: CSP {'activé' if _CSP_ENABLED else 'DÉSACTIVÉ (CSP_ENABLED=false)'}")
+
+
+class SecurityHeadersMiddleware:
+    """Ajoute les headers de sécurité. Middleware ASGI pur, sans BaseHTTPMiddleware."""
 
     def __init__(self, app):
         self.app = app
@@ -953,17 +963,19 @@ class SecurityHeadersMiddleware:
             return
 
         # Skip preflight OPTIONS — laisser CORSMiddleware gérer seul
-        method = scope.get("method", "")
-        if method == "OPTIONS":
+        if scope.get("method") == "OPTIONS":
             await self.app(scope, receive, send)
             return
 
         async def send_with_headers(message):
             if message["type"] == "http.response.start":
-                headers = dict(message.get("headers", []))
-                for key, value in self.SECURITY_HEADERS.items():
-                    headers[key.lower().encode()] = value.encode()
-                message["headers"] = list(headers.items())
+                # Préserver les headers existants + ajouter les security headers
+                # On utilise une liste (pas un dict) pour conserver les doublons (ex: Set-Cookie)
+                existing = list(message.get("headers", []))
+                existing_names = {k.lower() for k, _ in existing}
+                extra = [(k, v) for k, v in _SECURITY_HEADERS if k not in existing_names]
+                message = dict(message)
+                message["headers"] = existing + extra
             await send(message)
 
         await self.app(scope, receive, send_with_headers)
