@@ -61,7 +61,7 @@ class ProfileUpdate(BaseModel):
     """Modèle pour la mise à jour du profil utilisateur"""
     nom: Optional[str] = Field(None, min_length=2, max_length=100)
     email: Optional[EmailStr] = None
-    telephone: Optional[str] = Field(None, regex=r'^(\+33|0)[1-9](\d{8})$')
+    telephone: Optional[str] = Field(None, pattern=r'^(\+33|0)[1-9](\d{8})$')
     ville: Optional[str] = Field(None, min_length=2, max_length=100)
 
     @validator('nom')
