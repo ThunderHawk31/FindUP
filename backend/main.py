@@ -170,8 +170,8 @@ async def health_check():
     """Vérification de l'état de santé de l'API"""
     try:
         # Test de connexion Supabase
-        supabase_anon.table("artisans").select("id").limit(1).execute()
-        return {"status": "healthy", "database": "connected"}
+        supabase_service.table("artisans").select("id").limit(1).execute()
+        return {"status": "ok", "supabase": "connected", "auth": "anon_rls_not_tested"}
     except Exception as e:
         logger.error(f"Health check failed: {e}")
         return JSONResponse(
