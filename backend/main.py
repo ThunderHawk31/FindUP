@@ -6,7 +6,7 @@ Application FastAPI pour la plateforme de mise en relation artisans-clients
 import os
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from supabase import create_client, Client
@@ -106,6 +106,8 @@ class SecurityHeadersMiddleware:
 # Enregistrement du middleware de sécurité
 app.add_middleware(SecurityHeadersMiddleware)
 
+api_router = APIRouter(prefix="/api")
+
 def _build_artisan_response(artisan_data: dict, user_authorized: bool = False) -> dict:
     """
     Construit la réponse artisan avec contrôle d'accès aux données sensibles
@@ -177,7 +179,7 @@ async def health_check():
             content={"status": "unhealthy", "database": "disconnected"}
         )
 
-@app.post("/search", response_model=list[ArtisanResponse])
+@api_router.post("/search", response_model=list[ArtisanResponse])
 async def search_artisans(request: SearchRequest, current_user=Depends(get_current_user)):
     """
     Recherche d'artisans avec filtres
@@ -222,7 +224,7 @@ async def search_artisans(request: SearchRequest, current_user=Depends(get_curre
         logger.error(f"Erreur lors de la recherche: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la recherche")
 
-@app.get("/artisan/{artisan_id}")
+@api_router.get("/artisan/{artisan_id}")
 async def get_artisan_details(artisan_id: int, current_user=Depends(get_current_user)):
     """
     Récupération des détails d'un artisan
@@ -245,7 +247,7 @@ async def get_artisan_details(artisan_id: int, current_user=Depends(get_current_
         logger.error(f"Erreur lors de la récupération de l'artisan {artisan_id}: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la récupération")
 
-@app.get("/artisan/{artisan_id}/avis")
+@api_router.get("/artisan/{artisan_id}/avis")
 async def get_artisan_avis(artisan_id: int):
     """Récupération des avis d'un artisan (accès public)"""
     try:
@@ -256,7 +258,7 @@ async def get_artisan_avis(artisan_id: int):
         logger.error(f"Erreur lors de la récupération des avis: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la récupération des avis")
 
-@app.post("/artisan/{artisan_id}/avis")
+@api_router.post("/artisan/{artisan_id}/avis")
 async def create_avis(artisan_id: int, avis: AvisCreate, current_user=Depends(require_auth)):
     """
     Création d'un avis pour un artisan
@@ -316,7 +318,7 @@ async def _update_artisan_rating(artisan_id: int):
     except Exception as e:
         logger.error(f"Erreur lors de la mise à jour de la note: {e}")
 
-@app.get("/profile")
+@api_router.get("/profile")
 async def get_profile(current_user=Depends(require_auth)):
     """Récupération du profil utilisateur"""
     try:
@@ -330,7 +332,7 @@ async def get_profile(current_user=Depends(require_auth)):
         logger.error(f"Erreur lors de la récupération du profil: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la récupération du profil")
 
-@app.put("/profile")
+@api_router.put("/profile")
 async def update_profile(profile_data: ProfileUpdate, current_user=Depends(require_auth)):
     """Mise à jour du profil utilisateur"""
     try:
@@ -351,7 +353,7 @@ async def update_profile(profile_data: ProfileUpdate, current_user=Depends(requi
         logger.error(f"Erreur lors de la mise à jour du profil: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la mise à jour du profil")
 
-@app.post("/chat")
+@api_router.post("/chat/send")
 async def chat_with_ai(request: Request, current_user=Depends(require_auth)):
     """
     Chat avec l'IA pour des conseils sur les travaux
@@ -401,6 +403,8 @@ async def chat_with_ai(request: Request, current_user=Depends(require_auth)):
     except Exception as e:
         logger.error(f"Erreur lors du chat avec l'IA: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la communication avec l'IA")
+
+app.include_router(api_router)
 
 if __name__ == "__main__":
     import uvicorn
