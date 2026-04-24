@@ -2,11 +2,10 @@
 conftest.py — Configuration de base pour les tests FindUP backend
 
 Les clients Supabase et Anthropic sont mockés — aucune connexion réelle requise.
-Le Tester du Squad IA écrit ses tests dans ce dossier, ils s'appuient sur ce conftest.
 
 Usage dans tes tests :
     def test_exemple(client):
-        response = client.get("/api/artisans")
+        response = client.get("/health")
         assert response.status_code == 200
 """
 
@@ -20,10 +19,10 @@ BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if BACKEND_DIR not in sys.path:
     sys.path.insert(0, BACKEND_DIR)
 
-# ── Variables d'env minimales (avant import de server.py) ─────────────────────
+# ── Variables d'env minimales (avant import de main.py) ──────────────────────
 _TEST_ENV = {
     "SUPABASE_URL":         "https://test.supabase.co",
-    "SUPABASE_KEY":         "test-service-key",
+    "SUPABASE_SERVICE_KEY": "test-service-key",
     "SUPABASE_ANON_KEY":    "test-anon-key",
     "ANTHROPIC_API_KEY":    "test-anthropic-key",
 }
@@ -35,12 +34,11 @@ for _key, _val in _TEST_ENV.items():
 
 def _make_mock_supabase():
     """
-    Retourne un mock Supabase avec les chaînes de méthodes les plus courantes
+    Retourne un mock Supabase avec les chaînes de méthodes courantes
     préconfigurées pour retourner des valeurs vides (pas d'erreur).
-    Dans tes tests, tu peux surcharger : mock_sb.table(...).select(...).execute.return_value.data = [...]
+    Dans tes tests : mock_sb.table(...).select(...).execute.return_value.data = [...]
     """
     mock = MagicMock()
-    # Chaînes courantes → listes vides par défaut
     _chain = mock.table.return_value.select.return_value
     _chain.execute.return_value.data = []
     _chain.limit.return_value.execute.return_value.data = []
@@ -48,12 +46,11 @@ def _make_mock_supabase():
     _chain.eq.return_value.maybe_single.return_value.execute.return_value.data = None
     _chain.eq.return_value.order.return_value.execute.return_value.data = []
     _chain.range.return_value.execute.return_value.data = []
-    # Auth
-    mock.auth.get_user.return_value = None
-    mock.auth.sign_up.return_value = MagicMock(user=None, session=None)
-    mock.auth.sign_in_with_password.return_value = MagicMock(user=None, session=None)
+    # Auth admin (utilisé par PUT /api/profile)
+    mock.auth.admin.update_user_by_id.return_value = None
     mock.auth.admin.delete_user.return_value = None
-    # RPC
+    mock.auth.get_user.return_value = None
+    # RPC (search_artisans_nearby)
     mock.rpc.return_value.execute.return_value.data = []
     return mock
 
@@ -70,32 +67,24 @@ def mock_supabase_client():
 def client():
     """
     FastAPI TestClient avec Supabase et Anthropic entièrement mockés.
-    Portée 'module' → une seule instance par fichier de test (performant).
-
-    Exemple d'utilisation:
-        def test_get_artisans(client):
-            resp = client.get("/api/artisans")
-            assert resp.status_code == 200
-            assert isinstance(resp.json(), list)
+    Portée 'module' → une seule instance par fichier de test.
     """
     mock_sb = _make_mock_supabase()
     mock_anthropic = MagicMock()
-    # Mocker le retour du client Anthropic messages.create
-    mock_anthropic.return_value.messages.create.return_value.content = [
-        MagicMock(text='{"message":"Test","suggestions":[],"collected":{},"diagnosis":null,"needs_location":false,"ready_to_search":false}')
+    # Anthropic : client.messages.create(...).content[0].text
+    mock_anthropic.messages.create.return_value.content = [
+        MagicMock(text="Réponse de test de l'IA")
     ]
 
-    with patch("server.create_client", return_value=mock_sb), \
-         patch("server.anthropic_module.Anthropic", return_value=mock_anthropic):
+    with patch("main.create_client", return_value=mock_sb), \
+         patch("main.Anthropic", return_value=mock_anthropic):
 
         from fastapi.testclient import TestClient
-        from server import app
-        import server
+        import main
 
-        # Injecter les mocks directement dans les globals de server.py
-        server.supabase = mock_sb
-        server.supabase_anon = mock_sb
-        server.anthropic_client = mock_anthropic.return_value
+        main.supabase_service = mock_sb
+        main.supabase_anon = mock_sb
+        main.anthropic_client = mock_anthropic
 
-        with TestClient(app, raise_server_exceptions=False) as test_client:
+        with TestClient(main.app, raise_server_exceptions=False) as test_client:
             yield test_client
