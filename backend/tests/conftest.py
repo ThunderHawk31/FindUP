@@ -88,3 +88,15 @@ def client():
 
         with TestClient(main.app, raise_server_exceptions=False) as test_client:
             yield test_client
+
+
+@pytest.fixture
+def auth_client(client, mock_user):
+    """Client avec require_auth et get_current_user overridés via dependency_overrides."""
+    import main as _main
+    from auth import require_auth as _require_auth, get_current_user as _get_current_user
+    _main.app.dependency_overrides[_require_auth] = lambda: mock_user
+    _main.app.dependency_overrides[_get_current_user] = lambda: mock_user
+    yield client
+    _main.app.dependency_overrides.pop(_require_auth, None)
+    _main.app.dependency_overrides.pop(_get_current_user, None)

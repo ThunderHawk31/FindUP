@@ -198,8 +198,8 @@ async def search_artisans(request: SearchRequest, current_user=Depends(get_curre
             query = query.ilike("ville", f"%{request.ville}%")
         
         # Filtres optionnels
-        if request.note_minimum:
-            query = query.gte("note_moyenne", request.note_minimum)
+        if request.note_min:
+            query = query.gte("note_moyenne", request.note_min)
         if request.certifie_seulement:
             query = query.eq("certifie", True)
         if request.disponible_seulement:

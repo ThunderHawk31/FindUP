@@ -161,26 +161,24 @@ class TestAPIEndpoints:
         assert response.status_code == 200
         assert "FindUP API" in response.json()["message"]
     
-    @patch('main.supabase_anon')
-    def test_health_check_healthy(self, mock_supabase_anon, client):
+    @patch('main.supabase_service')
+    def test_health_check_healthy(self, mock_supabase_service, client):
         """Test health check - état sain"""
-        # Mock réponse Supabase réussie
         mock_response = Mock()
-        mock_response.data = [{"id": 1}]
-        mock_supabase_anon.table.return_value.select.return_value.limit.return_value.execute.return_value = mock_response
-        
+        mock_response.data = [{"artisan_id": 1}]
+        mock_supabase_service.table.return_value.select.return_value.limit.return_value.execute.return_value = mock_response
+
         response = client.get("/health")
         assert response.status_code == 200
         data = response.json()
-        assert data["status"] == "healthy"
-        assert data["database"] == "connected"
-    
-    @patch('main.supabase_anon')
-    def test_health_check_unhealthy(self, mock_supabase_anon, client):
+        assert data["status"] == "ok"
+        assert data["supabase"] == "connected"
+
+    @patch('main.supabase_service')
+    def test_health_check_unhealthy(self, mock_supabase_service, client):
         """Test health check - état malsain"""
-        # Mock exception Supabase
-        mock_supabase_anon.table.side_effect = Exception("DB Connection failed")
-        
+        mock_supabase_service.table.side_effect = Exception("DB Connection failed")
+
         response = client.get("/health")
         assert response.status_code == 503
         data = response.json()
@@ -188,9 +186,8 @@ class TestAPIEndpoints:
         assert data["database"] == "disconnected"
     
     @patch('main.supabase_anon')
-    def test_search_artisans_authenticated(self, mock_supabase_anon, client, mock_user):
+    def test_search_artisans_authenticated(self, mock_supabase_anon, auth_client):
         """Test recherche d'artisans avec utilisateur authentifié"""
-        # Mock réponse Supabase
         mock_response = Mock()
         mock_response.data = [{
             "id": 1,
@@ -202,19 +199,15 @@ class TestAPIEndpoints:
             "telephone": "0123456789",
             "email": "jean@example.com"
         }]
-        mock_supabase_anon.table.return_value.select.return_value.ilike.return_value.ilike.return_value.limit.return_value.execute.return_value = mock_response
-        
-        with patch('main.get_current_user', return_value=mock_user):
-            response = client.post("/search", json={
-                "metier": "Plombier",
-                "ville": "Paris"
-            })
-        
+        mock_supabase_anon.table.return_value.select.return_value.ilike.return_value.ilike.return_value.eq.return_value.limit.return_value.execute.return_value = mock_response
+
+        response = auth_client.post("/api/search", json={"metier": "Plombier", "ville": "Paris"})
+
         assert response.status_code == 200
         data = response.json()
         assert len(data) == 1
         assert data[0]["nom"] == "Jean Dupont"
-        assert data[0]["telephone"] == "0123456789"  # Données complètes pour utilisateur auth
+        assert data[0]["telephone"] == "0123456789"
     
     @patch('main.supabase_anon')
     def test_search_artisans_unauthenticated(self, mock_supabase_anon, client):
@@ -231,24 +224,24 @@ class TestAPIEndpoints:
             "telephone": "0123456789",
             "email": "jean@example.com"
         }]
-        mock_supabase_anon.table.return_value.select.return_value.ilike.return_value.ilike.return_value.limit.return_value.execute.return_value = mock_response
-        
+        mock_supabase_anon.table.return_value.select.return_value.ilike.return_value.ilike.return_value.eq.return_value.limit.return_value.execute.return_value = mock_response
+
         with patch('main.get_current_user', return_value=None):
-            response = client.post("/search", json={
+            response = client.post("/api/search", json={
                 "metier": "Plombier",
                 "ville": "Paris"
             })
-        
+
         assert response.status_code == 200
         data = response.json()
         assert len(data) == 1
         assert data[0]["nom"] == "Jean Dupont"
-        assert data[0]["telephone"] == "***-***-****"  # Données masquées
+        assert data[0]["telephone"] == "***-***-****"
     
     def test_search_artisans_invalid_data(self, client):
-        """Test recherche avec données invalides"""
-        response = client.post("/search", json={})
-        assert response.status_code == 422  # Validation error
+        """Test recherche avec type invalide"""
+        response = client.post("/api/search", json={"note_min": "invalide"})
+        assert response.status_code == 422
     
     @patch('main.supabase_anon')
     def test_get_artisan_details_found(self, mock_supabase_anon, client, mock_user):
@@ -264,7 +257,7 @@ class TestAPIEndpoints:
         mock_supabase_anon.table.return_value.select.return_value.eq.return_value.execute.return_value = mock_response
         
         with patch('main.get_current_user', return_value=mock_user):
-            response = client.get("/artisan/1")
+            response = client.get("/api/artisan/1")
         
         assert response.status_code == 200
         data = response.json()
@@ -279,7 +272,7 @@ class TestAPIEndpoints:
         mock_response.data = []
         mock_supabase_anon.table.return_value.select.return_value.eq.return_value.execute.return_value = mock_response
         
-        response = client.get("/artisan/999")
+        response = client.get("/api/artisan/999")
         assert response.status_code == 404
         assert "Artisan non trouvé" in response.json()["detail"]
     
@@ -294,7 +287,7 @@ class TestAPIEndpoints:
         ]
         mock_supabase_anon.table.return_value.select.return_value.eq.return_value.order.return_value.execute.return_value = mock_response
         
-        response = client.get("/artisan/1/avis")
+        response = client.get("/api/artisan/1/avis")
         assert response.status_code == 200
         data = response.json()
         assert len(data) == 2
@@ -303,94 +296,82 @@ class TestAPIEndpoints:
     @patch('main.supabase_anon')
     @patch('main.supabase_service')
     @patch('main._update_artisan_rating')
-    def test_create_avis_success(self, mock_update_rating, mock_supabase_service, mock_supabase_anon, client, mock_user):
+    def test_create_avis_success(self, mock_update_rating, mock_supabase_service, mock_supabase_anon, auth_client):
         """Test création avis - succès"""
-        # Mock artisan existe
         mock_artisan_response = Mock()
         mock_artisan_response.data = [{"id": 1}]
-        
-        # Mock pas d'avis existant
         mock_existing_avis = Mock()
         mock_existing_avis.data = []
-        
-        # Mock création avis
         mock_create_response = Mock()
         mock_create_response.data = [{"id": 1, "note": 5, "commentaire": "Excellent"}]
-        
-        mock_supabase_anon.table.return_value.select.return_value.eq.return_value.execute.side_effect = [
-            mock_artisan_response,  # Vérification artisan
-            mock_existing_avis      # Vérification avis existant
-        ]
+        # Artisan existe : table("artisans").select.eq.execute
+        mock_supabase_anon.table.return_value.select.return_value.eq.return_value.execute.return_value = mock_artisan_response
+        # Pas de doublon : table("avis").select.eq.eq.execute → []
+        mock_supabase_anon.table.return_value.select.return_value.eq.return_value.eq.return_value.execute.return_value = mock_existing_avis
         mock_supabase_service.table.return_value.insert.return_value.execute.return_value = mock_create_response
-        
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.post("/artisan/1/avis", json={
-                "note": 5,
-                "commentaire": "Excellent travail"
-            })
-        
+
+        response = auth_client.post("/api/artisan/1/avis", json={
+            "artisan_id": 1,
+            "note": 5,
+            "commentaire": "Excellent travail, très professionnel"
+        })
+
         assert response.status_code == 200
         data = response.json()
         assert data["note"] == 5
         mock_update_rating.assert_called_once_with(1)
     
     @patch('main.supabase_anon')
-    def test_create_avis_artisan_not_found(self, mock_supabase_anon, client, mock_user):
+    def test_create_avis_artisan_not_found(self, mock_supabase_anon, auth_client):
         """Test création avis - artisan non trouvé"""
-        # Mock artisan n'existe pas
         mock_response = Mock()
         mock_response.data = []
         mock_supabase_anon.table.return_value.select.return_value.eq.return_value.execute.return_value = mock_response
-        
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.post("/artisan/999/avis", json={
-                "note": 5,
-                "commentaire": "Test"
-            })
-        
+
+        response = auth_client.post("/api/artisan/999/avis", json={
+            "artisan_id": 999,
+            "note": 5,
+            "commentaire": "Test commentaire valide"
+        })
+
         assert response.status_code == 404
         assert "Artisan non trouvé" in response.json()["detail"]
     
     @patch('main.supabase_anon')
-    def test_create_avis_already_exists(self, mock_supabase_anon, client, mock_user):
+    def test_create_avis_already_exists(self, mock_supabase_anon, auth_client):
         """Test création avis - avis déjà existant"""
-        # Mock artisan existe
         mock_artisan_response = Mock()
         mock_artisan_response.data = [{"id": 1}]
-        
-        # Mock avis existant
         mock_existing_avis = Mock()
         mock_existing_avis.data = [{"id": 1}]
-        
         mock_supabase_anon.table.return_value.select.return_value.eq.return_value.execute.side_effect = [
             mock_artisan_response,
             mock_existing_avis
         ]
-        
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.post("/artisan/1/avis", json={
-                "note": 5,
-                "commentaire": "Test"
-            })
-        
+
+        response = auth_client.post("/api/artisan/1/avis", json={
+            "artisan_id": 1,
+            "note": 5,
+            "commentaire": "Test commentaire valide"
+        })
+
         assert response.status_code == 400
         assert "déjà donné un avis" in response.json()["detail"]
     
     def test_create_avis_unauthenticated(self, client):
         """Test création avis sans authentification"""
         with patch('main.require_auth', side_effect=HTTPException(status_code=401, detail="Non authentifié")):
-            response = client.post("/artisan/1/avis", json={
+            response = client.post("/api/artisan/1/avis", json={
                 "note": 5,
                 "commentaire": "Test"
             })
         
         assert response.status_code == 401
     
-    def test_get_profile_authenticated(self, client, mock_user):
+    def test_get_profile_authenticated(self, auth_client, mock_user):
         """Test récupération profil utilisateur authentifié"""
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.get("/profile")
-        
+        response = auth_client.get("/api/profile")
+
         assert response.status_code == 200
         data = response.json()
         assert data["id"] == mock_user["id"]
@@ -399,84 +380,65 @@ class TestAPIEndpoints:
     def test_get_profile_unauthenticated(self, client):
         """Test récupération profil sans authentification"""
         with patch('main.require_auth', side_effect=HTTPException(status_code=401, detail="Non authentifié")):
-            response = client.get("/profile")
+            response = client.get("/api/profile")
         
         assert response.status_code == 401
     
     @patch('main.supabase_service')
-    def test_update_profile_success(self, mock_supabase_service, client, mock_user):
+    def test_update_profile_success(self, mock_supabase_service, auth_client):
         """Test mise à jour profil - succès"""
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.put("/profile", json={
-                "nom": "Nouveau Nom"
-            })
-        
+        response = auth_client.put("/api/profile", json={"nom": "Nouveau Nom"})
+
         assert response.status_code == 200
         assert "mis à jour avec succès" in response.json()["message"]
         mock_supabase_service.auth.admin.update_user_by_id.assert_called_once()
     
     @patch('main.chat_rate_limiter')
     @patch('main.anthropic_client')
-    def test_chat_with_ai_success(self, mock_anthropic, mock_rate_limiter, client, mock_user):
+    def test_chat_with_ai_success(self, mock_anthropic, mock_rate_limiter, auth_client):
         """Test chat IA - succès"""
-        # Mock rate limiter autorise
         mock_rate_limiter.is_allowed.return_value = True
-        
-        # Mock réponse Anthropic
         mock_response = Mock()
         mock_response.content = [Mock(text="Voici ma réponse")]
         mock_anthropic.messages.create.return_value = mock_response
-        
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.post("/chat", json={
-                "message": "Comment choisir un plombier ?"
-            })
-        
+
+        response = auth_client.post("/api/chat/send", json={
+            "message": "Comment choisir un plombier ?"
+        })
+
         assert response.status_code == 200
         data = response.json()
         assert "response" in data
         assert data["response"] == "Voici ma réponse"
     
     @patch('main.chat_rate_limiter')
-    def test_chat_with_ai_rate_limited(self, mock_rate_limiter, client, mock_user):
+    def test_chat_with_ai_rate_limited(self, mock_rate_limiter, auth_client):
         """Test chat IA - rate limité"""
-        # Mock rate limiter refuse
         mock_rate_limiter.is_allowed.return_value = False
-        
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.post("/chat", json={
-                "message": "Test message"
-            })
-        
+
+        response = auth_client.post("/api/chat/send", json={"message": "Test message"})
+
         assert response.status_code == 429
         assert "Trop de requêtes" in response.json()["detail"]
     
-    def test_chat_with_ai_empty_message(self, client, mock_user):
+    def test_chat_with_ai_empty_message(self, auth_client):
         """Test chat IA - message vide"""
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.post("/chat", json={
-                "message": ""
-            })
-        
+        response = auth_client.post("/api/chat/send", json={"message": ""})
+
         assert response.status_code == 400
         assert "Message requis" in response.json()["detail"]
-    
-    def test_chat_with_ai_message_too_long(self, client, mock_user):
+
+    def test_chat_with_ai_message_too_long(self, auth_client):
         """Test chat IA - message trop long"""
-        long_message = "x" * 501  # Plus de 500 caractères
-        
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.post("/chat", json={
-                "message": long_message
-            })
-        
+        response = auth_client.post("/api/chat/send", json={"message": "x" * 501})
+
         assert response.status_code == 400
         assert "Message trop long" in response.json()["detail"]
     
     def test_chat_with_ai_unauthenticated(self, client):
         """Test chat IA sans authentification"""
         with patch('main.require_auth', side_effect=HTTPException(status_code=401, detail="Non authentifié")):
-            response = client.post("/chat", json={
+            response = client.post("/api/chat/send", json={
                 "message": "Test"
             })
         
@@ -492,7 +454,7 @@ class TestErrorHandling:
         # Mock exception Supabase
         mock_supabase_anon.table.side_effect = Exception("Database error")
         
-        response = client.post("/search", json={
+        response = client.post("/api/search", json={
             "metier": "Plombier",
             "ville": "Paris"
         })
@@ -506,7 +468,7 @@ class TestErrorHandling:
         # Mock exception Supabase
         mock_supabase_anon.table.side_effect = Exception("Database error")
         
-        response = client.get("/artisan/1")
+        response = client.get("/api/artisan/1")
         
         assert response.status_code == 500
         assert "Erreur lors de la récupération" in response.json()["detail"]
@@ -517,7 +479,7 @@ class TestErrorHandling:
         # Mock exception Supabase
         mock_supabase_anon.table.side_effect = Exception("Database error")
         
-        response = client.get("/artisan/1/avis")
+        response = client.get("/api/artisan/1/avis")
         
         assert response.status_code == 500
         assert "Erreur lors de la récupération des avis" in response.json()["detail"]
@@ -526,27 +488,20 @@ class TestErrorHandling:
 class TestInputValidation:
     """Tests de validation des entrées"""
     
-    def test_search_artisans_missing_required_fields(self, client):
-        """Test recherche sans champs requis"""
-        response = client.post("/search", json={})
+    def test_search_artisans_invalid_field_type(self, client):
+        """Test recherche avec type invalide pour note_min"""
+        response = client.post("/api/search", json={"note_min": "invalide"})
         assert response.status_code == 422
     
-    def test_create_avis_invalid_note(self, client, mock_user):
+    def test_create_avis_invalid_note(self, auth_client):
         """Test création avis avec note invalide"""
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.post("/artisan/1/avis", json={
-                "note": 6,  # Note > 5
-                "commentaire": "Test"
-            })
-        
+        response = auth_client.post("/api/artisan/1/avis", json={
+            "note": 6,
+            "commentaire": "Test"
+        })
         assert response.status_code == 422
-    
-    def test_create_avis_missing_fields(self, client, mock_user):
+
+    def test_create_avis_missing_fields(self, auth_client):
         """Test création avis avec champs manquants"""
-        with patch('main.require_auth', return_value=mock_user):
-            response = client.post("/artisan/1/avis", json={
-                "note": 5
-                # commentaire manquant
-            })
-        
+        response = auth_client.post("/api/artisan/1/avis", json={"note": 5})
         assert response.status_code == 422

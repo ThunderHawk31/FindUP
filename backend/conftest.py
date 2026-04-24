@@ -1,9 +1,20 @@
 """Configuration pytest et fixtures communes pour tous les tests."""
 
+import os
 import pytest
 import uuid
 from datetime import datetime
 from fastapi.testclient import TestClient
+
+# Doit être défini avant tout import de main.py / auth.py
+for _k, _v in {
+    "SUPABASE_URL":         "https://test.supabase.co",
+    "SUPABASE_SERVICE_KEY": "test-service-key",
+    "SUPABASE_ANON_KEY":    "test-anon-key",
+    "ANTHROPIC_API_KEY":    "test-anthropic-key",
+}.items():
+    os.environ.setdefault(_k, _v)
+
 from main import app
 
 
